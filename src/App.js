@@ -41,17 +41,14 @@ constructor(props) {
 			method: "POST",
 			headers: {"Content-type": "application/json"},
 			body: JSON.stringify(monkey)
-		}).catch(err => document.write(err));
+		}).then(response => response.json())
+			.then(json => {this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))})
+			.catch(err => document.write(err));
 
-		console.log(monkey);
-		this.state.monkeys.push({
-			monkey
-		});
-		this.setState({monkeys: this.state.monkeys});
 	}
 
 	saveMonkey(oldMonkey, newMonkey) {
-        const foundMonkey = _.find(this.state.monkeys, monkey => monkey.name === oldMonkey);
+        let foundMonkey = _.find(this.state.monkeys, monkey => monkey._id === oldMonkey);
         foundMonkey.monkey = newMonkey;
         this.setState({ monkeys: this.state.monkeys });
     }
@@ -61,7 +58,7 @@ constructor(props) {
 		fetch("http://localhost:1234/monkeys", {
 			method: "DELETE",
 			headers: {"Content-type": "application/json"},
-			body: JSON.stringify({_id: monkeyToDelete})
+			body: JSON.stringify({id: monkeyToDelete})
 		}).catch(err => document.write(err));
 
         _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);

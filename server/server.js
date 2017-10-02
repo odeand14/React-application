@@ -51,7 +51,7 @@ app.post("/monkeys", (req, res) => {
 
 app.delete("/monkeys", (req, res) => {
 
-    Monkey.findByIdAndRemove(req.body._id, (err, deletedMonkey) => {
+    Monkey.findByIdAndRemove(req.body.id, (err, deletedMonkey) => {
         if (err) {
             res.status(500).send(err);
             return;

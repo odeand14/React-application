@@ -34,12 +34,13 @@ export default class CreateMonkey extends React.Component {
         event.preventDefault();
         const monkey = {
             name: this.refs.name.value, 
-            race: this.refs.race.value
+            race: this.refs.race.value,
+
         };
         const validateInput = this.validateInput(monkey);
 
         if(validateInput) {
-            this.setState({error: validateInput})
+            this.setState({error: validateInput});
             return;
         }
 

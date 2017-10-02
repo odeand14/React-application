@@ -51,7 +51,7 @@ export default class MonkeyListItem extends React.Component {
             <tr>
                 <td>            
                     <button onClick={this.onEditClick.bind(this)} >Edit</button>
-                    <button onClick={this.props.deleteMonkey.bind(this, this.props._id)}>Delete</button>
+                    <button onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
                 </td>
             </tr>
         );
