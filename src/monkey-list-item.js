@@ -39,21 +39,17 @@ export default class MonkeyListItem extends React.Component {
     renderActionSection() {
         if (this.state.isEditing) {
             return (
-                <tr>
                     <td>
                         <button onClick={this.onSaveClick.bind(this)}>Save</button>
                         <button onClick={this.onCancelClick.bind(this)}>Cancel</button>
                     </td>
-                </tr>
             );
         }
         return (
-            <tr>
-                <td>            
+                <td>
                     <button onClick={this.onEditClick.bind(this)} >Edit</button>
                     <button onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
                 </td>
-            </tr>
         );
 
     }
