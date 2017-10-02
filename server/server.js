@@ -51,10 +51,7 @@ app.post("/monkeys", (req, res) => {
 
 app.delete("/monkeys", (req, res) => {
 
-    const monkeyToRemove = Monkey.find({name: req.body});
-    console.log(monkeyToRemove);
-
-    Monkey.findByIdAndRemove(monkeyToRemove._id, (err, deletedMonkey) => {
+    Monkey.findByIdAndRemove(req.body._id, (err, deletedMonkey) => {
         if (err) {
             res.status(500).send(err);
             return;

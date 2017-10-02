@@ -46,7 +46,7 @@ constructor(props) {
 		console.log(monkey);
 		this.state.monkeys.push({
 			monkey
-		})
+		});
 		this.setState({monkeys: this.state.monkeys});
 	}
 
@@ -61,10 +61,10 @@ constructor(props) {
 		fetch("http://localhost:1234/monkeys", {
 			method: "DELETE",
 			headers: {"Content-type": "application/json"},
-			body: JSON.stringify(monkeyToDelete)
+			body: JSON.stringify({_id: monkeyToDelete})
 		}).catch(err => document.write(err));
 
-        _.remove(this.state.monkeys, monkey => monkey.name === monkeyToDelete);
+        _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);
         this.setState({ monkeys: this.state.monkeys });
 	}
 
