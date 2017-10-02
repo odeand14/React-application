@@ -47,10 +47,17 @@ constructor(props) {
 
 	}
 
-	saveMonkey(oldMonkey, newMonkey) {
-        let foundMonkey = _.find(this.state.monkeys, monkey => monkey._id === oldMonkey);
-        foundMonkey.monkey = newMonkey;
-        this.setState({ monkeys: this.state.monkeys });
+    saveMonkey(oldMonkey, newMonkey) {
+        let newMonkeyState = this.state.monkeys.map(monkey => {
+            if (monkey.name === oldMonkey.name) {
+                monkey.name = newMonkey.name;
+                monkey.race = newMonkey.race;
+            }
+            return monkey;
+        });
+        this.setState(prevState => ({
+            monkeys: newMonkeyState
+        }));
     }
 	
 	deleteMonkey(monkeyToDelete) {
