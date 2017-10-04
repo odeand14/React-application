@@ -45,19 +45,31 @@ app.post("/monkeys", (req, res) => {
             res.status(500).send(err);
             return;
         }
-        res.status(200).send(savedMonkey);
+        res.status(201).send(savedMonkey);
     });
 });
 
-app.delete("/monkeys", (req, res) => {
+app.delete("/monkeys/:id", (req, res) => {
 
-    Monkey.findByIdAndRemove(req.body.id, (err, deletedMonkey) => {
+    Monkey.findByIdAndRemove(req.params.id, (err, deletedMonkey) => {
         if (err) {
             res.status(500).send(err);
             return;
         }
         res.status(200).send(deletedMonkey);
     });
+
+});
+
+app.put("/monkeys", (req, res) => {
+
+    Monkey.findByIdAndUpdate(req.body.id, {name: req.body.name, race: req.body.race}, (err, updatedMonkey) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(updatedMonkey);
+    })
 
 });
 

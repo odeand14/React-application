@@ -50,8 +50,12 @@ constructor(props) {
     saveMonkey(oldMonkey, newMonkey) {
         let newMonkeyState = this.state.monkeys.map(monkey => {
             if (monkey.name === oldMonkey.name) {
-                monkey.name = newMonkey.name;
-                monkey.race = newMonkey.race;
+                if(monkey.name !== "") {
+                    monkey.name = newMonkey.name;
+                }
+                if(monkey.race !== "") {
+                    monkey.race = newMonkey.race;
+                }
             }
             return monkey;
         });
@@ -62,15 +66,23 @@ constructor(props) {
 	
 	deleteMonkey(monkeyToDelete) {
 
-		fetch("http://localhost:1234/monkeys", {
+		fetch(`http://localhost:1234/monkeys/${monkeyToDelete}`, {
 			method: "DELETE",
 			headers: {"Content-type": "application/json"},
-			body: JSON.stringify({id: monkeyToDelete})
 		}).catch(err => document.write(err));
 
         _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);
         this.setState({ monkeys: this.state.monkeys });
 	}
+
+	updateMonkey(monkeyToUpdate) {
+
+        fetch(`http://localhost:1234/monkeys/${monkeyToUpdate}`, {
+            method: "PUT",
+            headers: {"Content-type": "application/json"},
+        }).catch(err => document.write(err));
+
+    }
 
 }
 
