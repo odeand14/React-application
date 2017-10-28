@@ -61,9 +61,9 @@ app.delete("/monkeys/:id", (req, res) => {
 
 });
 
-app.put("/monkeys", (req, res) => {
+app.put("/monkeys/:id", (req, res) => {
 
-    Monkey.findByIdAndUpdate(req.body.id, {name: req.body.name, race: req.body.race}, (err, updatedMonkey) => {
+    Monkey.findByIdAndUpdate(req.params.id, {name: req.body.name, race: req.body.race}, (err, updatedMonkey) => {
         if (err) {
             res.status(500).send(err);
             return;

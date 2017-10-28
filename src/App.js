@@ -48,6 +48,9 @@ constructor(props) {
 	}
 
     saveMonkey(oldMonkey, newMonkey) {
+
+        this.updateMonkey(oldMonkey);
+
         let newMonkeyState = this.state.monkeys.map(monkey => {
             if (monkey.name === oldMonkey.name) {
                 if(monkey.name !== "") {
