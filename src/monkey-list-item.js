@@ -76,7 +76,8 @@ export default class MonkeyListItem extends React.Component {
 
         const oldMonkey = {
             name: this.props.name,
-            race: this.props.race
+            race: this.props.race,
+            id: this.props.id
         };
         const newMonkey = {
             name: this.state.name,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StickyContainer, Sticky } from 'react-sticky';
 import _ from "lodash";
 import MonkeyList from "./monkey-list.js";
 import CreateMonkey from "./create-monkey.js";
@@ -55,8 +54,6 @@ constructor(props) {
 
     saveMonkey(oldMonkey, newMonkey) {
 
-        this.updateMonkey(oldMonkey);
-
         let newMonkeyState = this.state.monkeys.map(monkey => {
             if (monkey.name === oldMonkey.name) {
                 if(monkey.name !== "") {
@@ -68,6 +65,7 @@ constructor(props) {
             }
             return monkey;
         });
+		this.updateMonkey(oldMonkey.id, newMonkey);
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));
@@ -84,11 +82,12 @@ constructor(props) {
         this.setState({ monkeys: this.state.monkeys });
 	}
 
-	updateMonkey(monkeyToUpdate) {
+	updateMonkey(monkeyToUpdate, updatedMonkey) {
 
         fetch(`http://localhost:1234/monkeys/${monkeyToUpdate}`, {
             method: "PUT",
             headers: {"Content-type": "application/json"},
+			body: JSON.stringify(updatedMonkey)
         }).catch(err => document.write(err));
 
     }
