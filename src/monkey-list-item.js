@@ -41,8 +41,8 @@ export default class MonkeyListItem extends React.Component {
                             ref="editRace" />
                     </td>
                     <td>
-                        <button onClick={this.onSaveClick.bind(this)}>Save</button>
-                        <button onClick={this.onCancelClick.bind(this)}>Cancel</button>
+                        <button className="btn btn-primary mx-1" onClick={this.onSaveClick.bind(this)}>Save</button>
+                        <button className="btn btn-primary mx-1" onClick={this.onCancelClick.bind(this)}>Cancel</button>
                     </td>
                 </tr>
             ) : (
@@ -54,8 +54,8 @@ export default class MonkeyListItem extends React.Component {
                         {this.props.race}
                     </td>
                     <td>
-                        <button onClick={this.onEditClick.bind(this)} >Edit</button>
-                        <button onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
+                        <button className="btn btn-primary mx-1" onClick={this.onEditClick.bind(this)} >Edit</button>
+                        <button className="btn btn-primary mx-1" onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
                     </td>
                 </tr>
             )}

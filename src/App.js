@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { StickyContainer, Sticky } from 'react-sticky';
 import _ from "lodash";
 import MonkeyList from "./monkey-list.js";
 import CreateMonkey from "./create-monkey.js";
+import Header from "./header";
 
 class App extends Component {
 
@@ -25,11 +27,15 @@ constructor(props) {
 		return (
 
 			<div className="App">
-			<CreateMonkey monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
-			<MonkeyList 
-				monkeys={this.state.monkeys}
-				saveMonkey={this.saveMonkey.bind(this)}
-				deleteMonkey={this.deleteMonkey.bind(this)} />
+				<Header/>
+				<div className="scrollBar">
+				<MonkeyList
+					monkeys={this.state.monkeys}
+					saveMonkey={this.saveMonkey.bind(this)}
+					deleteMonkey={this.deleteMonkey.bind(this)} />
+				</div>
+				<hr/>
+				<CreateMonkey isSticky={true} monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
 			</div>
 
 		);

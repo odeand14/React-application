@@ -7,9 +7,11 @@
     "express": "^4.16.0",
     "loadash": "^1.0.0",
     "mongoose": "^4.11.13",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-scripts": "1.0.14"
+    "react-scripts": "1.0.14",
+    "react-sticky": "^6.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

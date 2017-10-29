@@ -14,7 +14,7 @@ export default class MonkeyList extends React.Component {
 
     render() {
         return(
-            <table>
+            <table className="table ">
                 <MonkeyListHeader/>
                 {this.renderItems()}
             </table>
