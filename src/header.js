@@ -5,16 +5,16 @@ export default class Header extends React.Component {
     render() {
 
         return(
-                <div className="row mx-3 my-3">
+                <div className="row mx-3 my-4 float-right">
 
                     <div className="mx-2">
-                        <input type="text" className="form-inline form-control" placeholder="Search" onChange={this.props.searchMonkeys.bind(this)}/>
+                        <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
                     </div>
 
                     <div className="text-right">
                         <ul className="nav d-inline">
                             <li className="dropdown">
-                                <button href="#" className="dropdown-toggle btn btn-primary" data-toggle="dropdown">Login</button>
+                                <button href="#" className="dropdown-toggle btn btn-info" data-toggle="dropdown">Login</button>
                                 <ul id="login-dp" className="dropdown-menu">
                                     <li>
                                         <div className="row mx-1">

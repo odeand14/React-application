@@ -20,9 +20,9 @@ export default class CreateMonkey extends React.Component {
 
     render() {
         return(
-            <form className="form-inline mx-3 my-3" onSubmit={this.handleCreate.bind(this)}>
-                <input className="form-control mx-1" type="text" placeholder="name" ref="name"/>
-                <input className="form-control mx-1" type="text" placeholder="race" ref="race" />
+            <form className="form-inline mx-3 my-4" onSubmit={this.handleCreate.bind(this)}>
+                <input className="form-control mx-1" type="text" placeholder="name" ref="name" required/>
+                <input className="form-control mx-1" type="text" placeholder="race" ref="race" required/>
                 <button className="btn btn-primary mx-1">Create</button>
                 {this.renderError()}
             </form>
@@ -51,11 +51,7 @@ export default class CreateMonkey extends React.Component {
     }
 
     validateInput(monkey) {
-        if (!monkey.name) {
-            return "Please enter name!";
-        } else if (!monkey.race) {
-            return "Please enter race!";
-        } else if (_.find(this.props.monkeys, tmpMonkey => tmpMonkey.name === monkey.name)) {
+        if (_.find(this.props.monkeys, tmpMonkey => tmpMonkey.name === monkey.name)) {
             return "Monkey exists already!";
         } else return null;
     }

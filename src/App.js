@@ -39,8 +39,10 @@ constructor(props) {
         return (
 
 			<div className="App">
-				<Header searchMonkeys={this.searchMonkeys.bind(this)}/>
-
+				<div className="row">
+					<CreateMonkey monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
+					<Header searchMonkeys={this.searchMonkeys.bind(this)}/>
+				</div>
 				<table className="table">
 					<MonkeyListHeader/>
 					{filteredMonkeys.map((monkey, key) => {
@@ -52,8 +54,7 @@ constructor(props) {
 							{...monkey} {...props}/>
 					})}
 				</table>
-
-				<CreateMonkey monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
+				<hr/>
 
 			</div>
 
