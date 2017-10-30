@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import _ from "lodash";
-import MonkeyList from "./monkey-list.js";
 import CreateMonkey from "./create-monkey.js";
 import Header from "./header";
+import MonkeyListItem from "./monkey-list-item";
+import MonkeyListHeader from "./monkey-list-header";
+
+
 
 class App extends Component {
 
@@ -10,7 +13,8 @@ constructor(props) {
 	super(props);
 
 	this.state = {
-		monkeys: []
+		monkeys: [],
+		search: []
 	};
 
 	fetch("http://localhost:1234/monkeys")
@@ -23,21 +27,41 @@ constructor(props) {
 
 
 	render() {
-		return (
+
+		let filteredMonkeys = this.state.monkeys.filter(
+			(monkey) => {
+				return monkey.name.toLowerCase().indexOf(this.state.search) !== -1;
+			}
+		);
+
+        const props = _.omit(this.props, "monkeys");
+
+        return (
 
 			<div className="App">
-				<Header/>
-				<div className="scrollBar">
-				<MonkeyList
-					monkeys={this.state.monkeys}
-					saveMonkey={this.saveMonkey.bind(this)}
-					deleteMonkey={this.deleteMonkey.bind(this)} />
-				</div>
-				<hr/>
-				<CreateMonkey isSticky={true} monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
+				<Header searchMonkeys={this.searchMonkeys.bind(this)}/>
+
+				<table className="table">
+					<MonkeyListHeader/>
+					{filteredMonkeys.map((monkey, key) => {
+						return <MonkeyListItem
+							key={key}
+							id={monkey._id}
+							saveMonkey={this.saveMonkey.bind(this)}
+							deleteMonkey={this.deleteMonkey.bind(this)}
+							{...monkey} {...props}/>
+					})}
+				</table>
+
+				<CreateMonkey monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
+
 			</div>
 
 		);
+	}
+
+	searchMonkeys(event) {
+        this.setState({search: event.target.value.substr(0, 20)});
 	}
 
 	createMonkey(monkey) {
