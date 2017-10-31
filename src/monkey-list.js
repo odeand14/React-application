@@ -7,7 +7,7 @@ export default class MonkeyList extends React.Component {
 
     renderItems() {
         const props = _.omit(this.props, "monkeys"); 
-        return this.props.monkeys.map((monkey, key) =>
+        return this.props.filteredMonkeys.map((monkey, key) =>
             (<MonkeyListItem key={key} id={monkey._id} {...monkey} {...props} />));
     }
 

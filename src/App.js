@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import _ from "lodash";
 import CreateMonkey from "./create-monkey.js";
 import Header from "./header";
-import MonkeyListItem from "./monkey-list-item";
-import MonkeyListHeader from "./monkey-list-header";
+import MonkeyList from "./monkey-list";
+import CreateUser from "./create-user";
 
 
 
@@ -14,7 +14,8 @@ constructor(props) {
 
 	this.state = {
 		monkeys: [],
-		search: []
+		search: [],
+		isOnCreate: false
 	};
 
 	fetch("http://localhost:1234/monkeys")
@@ -34,31 +35,36 @@ constructor(props) {
 			}
 		);
 
-        const props = _.omit(this.props, "monkeys");
+        let appContent;
+        if (this.state.isOnCreate) {
+            appContent = <CreateUser/>
+        } else {
+            appContent = <MonkeyList
+				filteredMonkeys={filteredMonkeys}
+				saveMonkey={this.saveMonkey.bind(this)}
+				deleteMonkey={this.deleteMonkey.bind(this)}
+			/>
+        }
 
         return (
 
 			<div className="App">
-				<div className="row">
-					<CreateMonkey monkeys={this.state.monkeys} createMonkey={this.createMonkey.bind(this)} />
-					<Header searchMonkeys={this.searchMonkeys.bind(this)}/>
-				</div>
-				<table className="table">
-					<MonkeyListHeader/>
-					{filteredMonkeys.map((monkey, key) => {
-						return <MonkeyListItem
-							key={key}
-							id={monkey._id}
-							saveMonkey={this.saveMonkey.bind(this)}
-							deleteMonkey={this.deleteMonkey.bind(this)}
-							{...monkey} {...props}/>
-					})}
-				</table>
+				<Header
+					isOnCreate={this.state.isOnCreate}
+					monkeys={this.state.monkeys}
+					createMonkey={this.createMonkey.bind(this)}
+					history={this.props.history}
+					searchMonkeys={this.searchMonkeys.bind(this)}
+					setOnCreate={this.setOnCreate.bind(this)}/>
+				{appContent}
 				<hr/>
-
 			</div>
 
 		);
+	}
+
+	setOnCreate() {
+		this.setState({isOnCreate: !this.state.isOnCreate});
 	}
 
 	searchMonkeys(event) {

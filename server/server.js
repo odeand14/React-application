@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/monkeys");
 
+const jwtSimple = require('jwt-simple');
+const bcrypt = require('bcryptjs');
+
 const express = require("express");
 const app = express();
 
@@ -9,6 +12,12 @@ app.use(bodyParser.json());
 
 const cors = require("cors");
 app.use("/", cors());
+
+const users = [];
+
+
+
+
 
 app.use((req, res, next) => {
     res.header("Access-Controll-Allow-Origin", "*");
