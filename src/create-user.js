@@ -1,15 +1,10 @@
 import React from "react";
-import _ from "lodash";
 
 export default class CreateUser extends React.Component {
 
     constructor(props) {
 
         super(props);
-
-        this.state = {
-            error: null
-        };
 
     }
 
@@ -34,29 +29,18 @@ export default class CreateUser extends React.Component {
 
     handleCreate(event) {
         event.preventDefault();
-        const monkey = {
+        const user = {
             name: this.refs.name.value,
-            race: this.refs.race.value,
-
+            email: this.refs.email.value,
+            password: this.refs.password.value
         };
-        const validateInput = this.validateInput(monkey);
 
-        if(validateInput) {
-            this.setState({error: validateInput});
-            return;
-        }
-
-        this.props.createMonkey(monkey);
-        this.setState({error: null});
+        this.props.createUser(user);
         this.refs.name.value = '';
-        this.refs.race.value = '';
+        this.refs.email.value = '';
+        this.refs.password.value = '';
     }
 
-    validateInput(monkey) {
-        if (_.find(this.props.monkeys, tmpMonkey => tmpMonkey.name === monkey.name)) {
-            return "Monkey exists already!";
-        } else return null;
-    }
 
 
 }

@@ -32,22 +32,27 @@ export default class CreateMonkey extends React.Component {
 
     handleCreate(event) {
         event.preventDefault();
-        const monkey = {
-            name: this.refs.name.value, 
-            race: this.refs.race.value,
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            const monkey = {
+                name: this.refs.name.value,
+                race: this.refs.race.value,
+                user: user
 
-        };
-        const validateInput = this.validateInput(monkey);
+            };
 
-        if(validateInput) {
-            this.setState({error: validateInput});
-            return;
+            const validateInput = this.validateInput(monkey);
+
+            if (validateInput) {
+                this.setState({error: validateInput});
+                return;
+            }
+
+            this.props.createMonkey(monkey);
+            this.setState({error: null});
+            this.refs.name.value = '';
+            this.refs.race.value = '';
         }
-
-        this.props.createMonkey(monkey);
-        this.setState({error: null});
-        this.refs.name.value = '';
-        this.refs.race.value = '';
     }
 
     validateInput(monkey) {

@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import _ from "lodash";
-import CreateMonkey from "./create-monkey.js";
 import Header from "./header";
 import MonkeyList from "./monkey-list";
 import CreateUser from "./create-user";
-
-
 
 class App extends Component {
 
@@ -15,6 +12,7 @@ constructor(props) {
 	this.state = {
 		monkeys: [],
 		search: [],
+		loggedIn: false,
 		isOnCreate: false
 	};
 
@@ -37,7 +35,8 @@ constructor(props) {
 
         let appContent;
         if (this.state.isOnCreate) {
-            appContent = <CreateUser/>
+            appContent = <CreateUser
+				createUser={this.createUser.bind(this)}/>
         } else {
             appContent = <MonkeyList
 				filteredMonkeys={filteredMonkeys}
@@ -50,6 +49,7 @@ constructor(props) {
 
 			<div className="App">
 				<Header
+					login={this.login.bind(this)}
 					isOnCreate={this.state.isOnCreate}
 					monkeys={this.state.monkeys}
 					createMonkey={this.createMonkey.bind(this)}
@@ -73,12 +73,52 @@ constructor(props) {
 
 	createMonkey(monkey) {
 
-		fetch("http://localhost:1234/monkeys", {
-			method: "POST",
-			headers: {"Content-type": "application/json"},
-			body: JSON.stringify(monkey)
-		}).then(response => response.json())
-			.then(json => {this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))})
+			fetch("http://localhost:1234/monkeys", {
+				method: "POST",
+				headers: {"Content-type": "application/json", 'Authorization': localStorage.getItem("token")},
+				body: JSON.stringify(monkey)
+			}).then(response => response.json())
+				.then(json => {
+					if (json.message === "No token" || json.message === "Username does not match!") {
+                        alert("You have to log in to create a little monkey!");
+					} else {
+                        this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))
+                    }
+				})
+				.catch(err => document.write(err));
+	}
+
+    createUser(user) {
+
+        fetch("http://localhost:1234/users", {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify(user)
+        }).then(response => response.json())
+            .catch(err => document.write(err));
+    }
+
+    login(user) {
+        fetch("http://localhost:1234/login", {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify(user)
+        }).then(response => {
+                if (!response.ok) {
+                    console.log(response);
+
+                    return response;
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(json => {
+
+				localStorage.setItem('token', json.token);
+                this.setState({loggedIn: true});
+                localStorage.setItem('user', JSON.stringify(json.user.email));
+
+        	})
 			.catch(err => document.write(err));
 
 	}
@@ -122,6 +162,7 @@ constructor(props) {
         }).catch(err => document.write(err));
 
     }
+
 
 }
 
