@@ -54,8 +54,8 @@ export default class MonkeyListItem extends React.Component {
                         {this.props.race}
                     </td>
                     <td>
-                        <button className="btn btn-primary mx-1" onClick={this.onEditClick.bind(this)} >Edit</button>
-                        <button className="btn btn-danger mx-1" onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
+                        <button className="btn btn-primary mx-1" disabled={!this.props.isLoggedIn} onClick={this.onEditClick.bind(this)} >Edit</button>
+                        <button className="btn btn-danger mx-1" disabled={!this.props.isLoggedIn} onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
                     </td>
                 </tr>
             )}

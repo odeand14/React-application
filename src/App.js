@@ -16,6 +16,10 @@ constructor(props) {
 		isOnCreate: false
 	};
 
+	if (localStorage.getItem("token")) {
+		this.state.loggedIn = true;
+	}
+
 	fetch("http://localhost:1234/monkeys")
 		.then(response => response.json())
 		.then(monkeys => this.setState({
@@ -42,6 +46,7 @@ constructor(props) {
 				filteredMonkeys={filteredMonkeys}
 				saveMonkey={this.saveMonkey.bind(this)}
 				deleteMonkey={this.deleteMonkey.bind(this)}
+				isLoggedIn={this.state.loggedIn}
 			/>
         }
 
