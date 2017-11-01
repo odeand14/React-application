@@ -14,13 +14,18 @@ export default class Header extends React.Component {
             createMonkeyBar = <div></div>;
             searchbar = <div></div>;
             loginText = "Home";
-        } else {
+        } else if (this.props.isLoggedIn) {
             createMonkeyBar = <CreateMonkey
                 monkeys={this.props.monkeys}
                 createMonkey={this.props.createMonkey.bind(this)} />;
             searchbar = <li className="nav-item mx-2">
                             <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
                         </li>;
+            loginText = "Join us";
+        } else {
+            searchbar = <li className="nav-item mx-2">
+                <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
+            </li>;
             loginText = "Join us";
         }
 

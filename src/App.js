@@ -49,6 +49,7 @@ constructor(props) {
 
 			<div className="App">
 				<Header
+					isLoggedIn={this.state.loggedIn}
 					login={this.login.bind(this)}
 					isOnCreate={this.state.isOnCreate}
 					monkeys={this.state.monkeys}
@@ -79,8 +80,8 @@ constructor(props) {
 				body: JSON.stringify(monkey)
 			}).then(response => response.json())
 				.then(json => {
-					if (json.message === "No token" || json.message === "Username does not match!") {
-                        alert("You have to log in to create a little monkey!");
+					if (json.message !== undefined) {
+                        alert(json.message);
 					} else {
                         this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))
                     }
@@ -103,21 +104,15 @@ constructor(props) {
             method: "POST",
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(user)
-        }).then(response => {
-                if (!response.ok) {
-                    console.log(response);
-
-                    return response;
-                }
-                return response;
-            })
-            .then(response => response.json())
-            .then(json => {
-
-				localStorage.setItem('token', json.token);
-                this.setState({loggedIn: true});
-                localStorage.setItem('user', JSON.stringify(json.user.email));
-
+        }).then(response => response.json())
+			.then(json => {
+                if (json.message !== undefined) {
+                    alert(json.message);
+                } else {
+					localStorage.setItem('token', json.token);
+					this.setState({loggedIn: true});
+					localStorage.setItem('user', JSON.stringify(json.user.email));
+            	}
         	})
 			.catch(err => document.write(err));
 
@@ -147,10 +142,19 @@ constructor(props) {
 		fetch(`http://localhost:1234/monkeys/${monkeyToDelete}`, {
 			method: "DELETE",
 			headers: {"Content-type": "application/json"},
-		}).catch(err => document.write(err));
+		}).then(response => response.json())
+            .then(json => {
+                console.log(json.message);
+                if (json.message !== undefined) {
+                    alert(json.message);
+                } else {
+                    _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);
+                    this.setState({ monkeys: this.state.monkeys });
+                }
+            })
+			.catch(err => document.write(err));
 
-        _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);
-        this.setState({ monkeys: this.state.monkeys });
+
 	}
 
 	updateMonkey(monkeyToUpdate, updatedMonkey) {

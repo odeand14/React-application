@@ -57,7 +57,7 @@ app.post('/users', (req, res) => {
         if(err) {
             res.status(500).send(err);
         } else if(result) {
-            res.status(400).json("Email taken!");
+            res.status(400).send("Email taken!");
         } else {
 
             const userWithHash = {
@@ -106,22 +106,20 @@ app.post('/login', (req, res) => {
     const user = req.body;
 
     if (!user.email) {
-        res.status(400).json('Must contain username');
+        res.status(400).send({message: 'Must contain username'});
         return;
     }
 
     if (!user.password) {
-        res.status(400).json('Must contain password');
+        res.status(400).send({message: 'Must contain password'});
         return;
     }
 
     User.findOne({email: user.email}, (err, result) => {
         if (err) {
             res.status(500).send(err);
-            return;
         } else if (!result) {
-            res.status(401).json('User does not exist!');
-            return;
+            res.status(401).send({message: 'User does not exist!'});
         } else {
             const passwordMatches = bcrypt.compareSync(
                 user.password,
@@ -129,7 +127,7 @@ app.post('/login', (req, res) => {
             );
 
             if (!passwordMatches) {
-                res.status(401).json('Wrong password');
+                res.status(401).send({message: 'Wrong password'});
                 return;
             }
 
@@ -165,7 +163,10 @@ app.get("/monkeys", (req, res) => {
 app.post("/monkeys", (req, res) => {
 
     const email = tokenExists(req, res);
-    if (!email) return;
+    if (!email) {
+        res.status(401).send({message: 'Need to log in to create a little monkey!'});
+        return;
+    }
 
     const body = req.body;
     const monkey = new Monkey(body);
@@ -181,6 +182,12 @@ app.post("/monkeys", (req, res) => {
 });
 
 app.delete("/monkeys/:id", (req, res) => {
+
+    // const email = tokenExists(req, res);
+    // if (!email) {
+    //     res.status(401).send({message: 'Need to log in to delete a little monkey!'});
+    //     return;
+    // }
 
     Monkey.findByIdAndRemove(req.params.id, (err, deletedMonkey) => {
         if (err) {
