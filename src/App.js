@@ -38,6 +38,7 @@ constructor(props) {
 		);
 
         let appContent;
+
         if (this.state.isOnCreate) {
             appContent = <CreateUser
 				createUser={this.createUser.bind(this)}/>
@@ -54,7 +55,8 @@ constructor(props) {
 
 			<div className="App">
 				<Header
-					isLoggedIn={this.state.loggedIn}
+					logOut={this.logOut.bind(this)}
+					loggedIn={this.state.loggedIn}
 					login={this.login.bind(this)}
 					isOnCreate={this.state.isOnCreate}
 					monkeys={this.state.monkeys}
@@ -67,6 +69,10 @@ constructor(props) {
 			</div>
 
 		);
+	}
+
+	isLoggedIn() {
+		return this.state.loggedIn;
 	}
 
 	setOnCreate() {
@@ -121,6 +127,12 @@ constructor(props) {
         	})
 			.catch(err => document.write(err));
 
+	}
+
+	logOut() {
+		this.setState({loggedIn: false});
+		localStorage.removeItem("token");
+        localStorage.removeItem("user");
 	}
 
     saveMonkey(oldMonkey, newMonkey) {

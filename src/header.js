@@ -3,18 +3,24 @@ import CreateMonkey from "./create-monkey";
 
 export default class Header extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
 
     render() {
 
 
-        let createMonkeyBar, searchbar, loginText;
+        let createMonkeyBar, searchbar, loginText, logOut;
 
         //TODO Change to usertoken
         if(this.props.isOnCreate) {
             createMonkeyBar = <div></div>;
             searchbar = <div></div>;
             loginText = "Home";
-        } else if (this.props.isLoggedIn) {
+            logOut = <div></div>;
+
+        } else if (this.props.loggedIn) {
             createMonkeyBar = <CreateMonkey
                 monkeys={this.props.monkeys}
                 createMonkey={this.props.createMonkey.bind(this)} />;
@@ -22,6 +28,9 @@ export default class Header extends React.Component {
                             <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
                         </li>;
             loginText = "Join us";
+            logOut = <li className="nav-item mx-2">
+                <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+            </li>
         } else {
             searchbar = <li className="nav-item mx-2">
                 <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
@@ -41,12 +50,12 @@ export default class Header extends React.Component {
                     {searchbar}
 
                     <li className="nav-item active dropdown">
-                        <button href="#" className="dropdown-toggle btn btn-info" data-toggle="dropdown">Login</button>
+                        <button href="#" className="dropdown-toggle btn btn-info" ref="menu" data-toggle="dropdown">Login</button>
                         <div className="row dropdown-menu dropdown-menu-right" >
                             <form className="form mx-2" onSubmit={this.handleLogin.bind(this)} acceptCharset="UTF-8">
                                 <div className="form-group">
                                     <label className="sr-only" htmlFor="exampleInputEmail2">Email address</label>
-                                    <input type="email" className="form-control"ref="email" placeholder="Email address" required/>
+                                    <input type="email" className="form-control" ref="email" placeholder="Email address" required/>
                                 </div>
                                 <div className="form-group">
                                     <label className="sr-only" htmlFor="exampleInputPassword2">Password</label>
@@ -61,6 +70,7 @@ export default class Header extends React.Component {
                             </div>
                         </div>
                     </li>
+                        {logOut}
                 </ul>
 
             </nav>
@@ -76,8 +86,11 @@ export default class Header extends React.Component {
         };
 
         this.props.login(user);
+
         this.refs.email.value = '';
         this.refs.password.value = '';
+        this.refs.menu.click();
+
     }
 
 }

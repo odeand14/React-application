@@ -57,7 +57,7 @@ app.post('/users', (req, res) => {
         if(err) {
             res.status(500).send(err);
         } else if(result) {
-            res.status(400).send("Email taken!");
+            res.status(409).send("Email taken!");
         } else {
 
             const userWithHash = {
