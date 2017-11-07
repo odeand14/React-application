@@ -183,12 +183,6 @@ app.post("/monkeys", (req, res) => {
 
 app.delete("/monkeys/:id", (req, res) => {
 
-    // const email = tokenExists(req, res);
-    // if (!email) {
-    //     res.status(401).send({message: 'Need to log in to delete a little monkey!'});
-    //     return;
-    // }
-
     Monkey.findByIdAndRemove(req.params.id, (err, deletedMonkey) => {
         if (err) {
             res.status(500).send(err);

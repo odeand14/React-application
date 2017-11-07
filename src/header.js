@@ -13,7 +13,8 @@ export default class Header extends React.Component {
 
         let createMonkeyBar, searchbar, loginText, logOut;
 
-        //TODO Change to usertoken
+        //TODO Change to usertoken or some
+
         if(this.props.isOnCreate) {
             createMonkeyBar = <div></div>;
             searchbar = <div></div>;
@@ -70,8 +71,10 @@ export default class Header extends React.Component {
                             </div>
                         </div>
                     </li>
-                        {logOut}
-                </ul>
+
+                    {logOut}
+
+                    </ul>
 
             </nav>
         )
