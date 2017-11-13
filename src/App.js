@@ -7,6 +7,7 @@ import CreateUser from "./create-user";
 class App extends Component {
 
 constructor(props) {
+    const url = process.env.MONGOLAB_URI;
 	super(props);
 
 	this.state = {
@@ -20,7 +21,7 @@ constructor(props) {
 		this.state.loggedIn = true;
 	}
 
-	fetch("http://localhost:1234/monkeys")
+	fetch(url + "/monkeys")
 		.then(response => response.json())
 		.then(monkeys => this.setState({
 		monkeys: monkeys

@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 
-const username = "jonnybananas";
-const password = "Apeloff";
-const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
+const url = process.env.MONGOLAB_URI;
 
-mongoose.connect(dbUri, {useMongoClient: true});
+mongoose.connect(url, {useMongoClient: true});
 
 const jwtSimple = require('jwt-simple');
 const bcrypt = require('bcryptjs');
@@ -21,7 +19,6 @@ app.use("/", cors());
 const jwtSecret = 'top super secret password do not share';
 
 const PORT = process.env.PORT || 1234;
-const HOST = "0.0.0.0";
 
 
 app.use((req, res, next) => {
