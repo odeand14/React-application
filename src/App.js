@@ -7,7 +7,10 @@ import CreateUser from "./create-user";
 class App extends Component {
 
 constructor(props) {
-    const url = process.env.MONGOLAB_URI;
+    const username = "jonnybananas";
+    const password = "Apeloff";
+    const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
+
 	super(props);
 
 	this.state = {
@@ -21,7 +24,7 @@ constructor(props) {
 		this.state.loggedIn = true;
 	}
 
-	fetch(url + "/monkeys")
+	fetch(dbUri + "/monkeys")
 		.then(response => response.json())
 		.then(monkeys => this.setState({
 		monkeys: monkeys

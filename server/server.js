@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 
-const url = process.env.MONGOLAB_URI;
+const username = "jonnybananas";
+const password = "Apeloff";
+const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
 
-mongoose.connect(url, {useMongoClient: true});
+
+mongoose.connect(dbUri, {useMongoClient: true});
 
 const jwtSimple = require('jwt-simple');
 const bcrypt = require('bcryptjs');
