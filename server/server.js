@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/monkeys");
+
+const username = "jonnybananas";
+const password = "Apeloff";
+const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
+
+mongoose.connect(dbUri, {useMongoClient: true});
 
 const jwtSimple = require('jwt-simple');
 const bcrypt = require('bcryptjs');
@@ -15,6 +20,8 @@ app.use("/", cors());
 
 const jwtSecret = 'top super secret password do not share';
 
+const PORT = process.env.PORT || 1234;
+const HOST = "0.0.0.0";
 
 
 app.use((req, res, next) => {
@@ -206,4 +213,4 @@ app.put("/monkeys/:id", (req, res) => {
 });
 
 
-app.listen(1234, () => console.log("Listening on port 1234!"));
+app.listen(PORT, () => console.log("Listening on port " + PORT + "!"));
