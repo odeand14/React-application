@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const username = "jonnybananas";
 const password = "Apeloff";
-const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
-
+const dbUri = `http://mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
 
 mongoose.connect(dbUri, {useMongoClient: true});
 

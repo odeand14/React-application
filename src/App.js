@@ -89,7 +89,7 @@ constructor(props) {
 
 	createMonkey(monkey) {
 
-			fetch("http://localhost:1234/monkeys", {
+			fetch(dbUri + "/monkeys", {
 				method: "POST",
 				headers: {"Content-type": "application/json", 'Authorization': localStorage.getItem("token")},
 				body: JSON.stringify(monkey)
