@@ -9,7 +9,7 @@ class App extends Component {
 constructor(props) {
     const username = "jonnybananas";
     const password = "Apeloff";
-    const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
+    const dbUri = `http://mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
 
 	super(props);
 
