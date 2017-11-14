@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const path = require('path');
 
 const username = "jonnybananas";
 const password = "Apeloff";
-const dbUri = `http://mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
+const dbUri = `mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
 
 mongoose.connect(dbUri, {useMongoClient: true});
 
@@ -209,6 +210,21 @@ app.put("/monkeys/:id", (req, res) => {
         res.status(200).send(updatedMonkey);
     })
 
+});
+
+app.use('/static', express.static(path.resolve(__dirname, '..', 'build', 'static')));
+
+app.use('/favicon.ico', (req, res) => {
+    console.log('hello fav');
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'favicon.ico'));
+});
+
+app.use('/service-worker.js', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'));
+});
+
+app.use('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
 });
 
 

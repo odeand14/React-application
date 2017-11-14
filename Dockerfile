@@ -2,15 +2,14 @@ FROM node:8-alpine
 
 WORKDIR /usr/src/app
 
-COPY server/server.js .
 COPY package.json .
 COPY yarn.lock .
 
 RUN yarn
 
-COPY . .
+COPY build build
+COPY server/server.js server/server.js
 
 EXPOSE 8080
 
-CMD ["node", "server.js"]
-CMD ["npm", "start"]
+CMD ["node", "server/server.js"]

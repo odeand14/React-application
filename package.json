@@ -21,9 +21,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-docker-image": "yarn run build && docker build -t monkeyapp .",
+    "deploy-app": "heroku container:push web"
   },
   "engines": {
-    "node": "6.9.1"
-  }
+    "node": ">=6.9.1"
+  },
+  "proxy": "http://localhost:1234"
 }

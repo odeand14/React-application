@@ -7,9 +7,6 @@ import CreateUser from "./create-user";
 class App extends Component {
 
 constructor(props) {
-    const username = "jonnybananas";
-    const password = "Apeloff";
-    const dbUri = `http://mongodb://${username}:${password}@ds161455.mlab.com:61455/monkeydatabase`;
 
 	super(props);
 
@@ -24,7 +21,7 @@ constructor(props) {
 		this.state.loggedIn = true;
 	}
 
-	fetch(dbUri + "/monkeys")
+	fetch("/monkeys")
 		.then(response => response.json())
 		.then(monkeys => this.setState({
 		monkeys: monkeys
@@ -89,9 +86,12 @@ constructor(props) {
 
 	createMonkey(monkey) {
 
-			fetch(dbUri + "/monkeys", {
+			fetch("/monkeys", {
 				method: "POST",
-				headers: {"Content-type": "application/json", 'Authorization': localStorage.getItem("token")},
+				headers: {
+					"Content-Type": "application/json",
+					'Authorization': localStorage.getItem("token")
+				},
 				body: JSON.stringify(monkey)
 			}).then(response => response.json())
 				.then(json => {
@@ -106,7 +106,7 @@ constructor(props) {
 
     createUser(user) {
 
-        fetch("http://localhost:1234/users", {
+        fetch("/users", {
             method: "POST",
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(user)
@@ -115,7 +115,7 @@ constructor(props) {
     }
 
     login(user) {
-        fetch("http://localhost:1234/login", {
+        fetch("/login", {
             method: "POST",
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(user)
@@ -160,7 +160,7 @@ constructor(props) {
 	
 	deleteMonkey(monkeyToDelete) {
 
-		fetch(`http://localhost:1234/monkeys/${monkeyToDelete}`, {
+		fetch(`/monkeys/${monkeyToDelete}`, {
 			method: "DELETE",
 			headers: {"Content-type": "application/json"},
 		}).then(response => response.json())
@@ -180,7 +180,7 @@ constructor(props) {
 
 	updateMonkey(monkeyToUpdate, updatedMonkey) {
 
-        fetch(`http://localhost:1234/monkeys/${monkeyToUpdate}`, {
+        fetch(`/monkeys/${monkeyToUpdate}`, {
             method: "PUT",
             headers: {"Content-type": "application/json"},
 			body: JSON.stringify(updatedMonkey)
