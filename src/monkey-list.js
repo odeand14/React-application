@@ -20,7 +20,7 @@ export default class MonkeyList extends React.Component {
 
     render() {
         return(
-            <table className="table ">
+            <table className="table table-bordered table-hover table-sm">
                 <MonkeyListHeader/>
                 {this.renderItems()}
             </table>
