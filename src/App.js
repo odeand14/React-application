@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from "lodash";
 import Header from "./header";
 import MonkeyList from "./monkey-list";
-import CreateUser from "./create-user";
+import Login from "./login";
 
 class App extends Component {
 
@@ -38,35 +38,37 @@ constructor(props) {
 			}
 		);
 
-        let appContent;
+        let appContent, header;
 
-        if (this.state.isOnCreate) {
-            appContent = <CreateUser
-				createUser={this.createUser.bind(this)}/>
+        if (!this.state.loggedIn) {
+            appContent = <Login
+				createUser={this.createUser.bind(this)}
+				login={this.login.bind(this)}/>;
+			header = <div></div>
         } else {
             appContent = <MonkeyList
 				filteredMonkeys={filteredMonkeys}
 				saveMonkey={this.saveMonkey.bind(this)}
 				deleteMonkey={this.deleteMonkey.bind(this)}
 				isLoggedIn={this.state.loggedIn}
-			/>
+			/>;
+			header = <Header
+				logOut={this.logOut.bind(this)}
+				loggedIn={this.state.loggedIn}
+				login={this.login.bind(this)}
+				isOnCreate={this.state.isOnCreate}
+				monkeys={this.state.monkeys}
+				createMonkey={this.createMonkey.bind(this)}
+				history={this.props.history}
+				searchMonkeys={this.searchMonkeys.bind(this)}
+				setOnCreate={this.setOnCreate.bind(this)}/>
         }
 
         return (
 
 			<div className="App">
-				<Header
-					logOut={this.logOut.bind(this)}
-					loggedIn={this.state.loggedIn}
-					login={this.login.bind(this)}
-					isOnCreate={this.state.isOnCreate}
-					monkeys={this.state.monkeys}
-					createMonkey={this.createMonkey.bind(this)}
-					history={this.props.history}
-					searchMonkeys={this.searchMonkeys.bind(this)}
-					setOnCreate={this.setOnCreate.bind(this)}/>
+				{header}
 				{appContent}
-				<hr/>
 			</div>
 
 		);
