@@ -59,6 +59,7 @@ constructor(props) {
 				savePublicMonkey={this.savePublicMonkey.bind(this)}
 			/>;
 			header = <Header
+				isOnInspiration={this.state.isOnInspiration}
 				goToInspirationSite={this.goToInspirationSite.bind(this)}
 				user={this.state.user}
 				logOut={this.logOut.bind(this)}
@@ -68,7 +69,14 @@ constructor(props) {
 				searchMonkeys={this.searchMonkeys.bind(this)}
 			/>
         } else {
-			header = <div></div>
+			header = <Header
+				isOnInspiration={this.state.isOnInspiration}
+				goToInspirationSite={this.goToInspirationSite.bind(this)}
+				user={this.state.user}
+				logOut={this.logOut.bind(this)}
+				loggedIn={this.state.loggedIn}
+				searchMonkeys={this.searchMonkeys.bind(this)}
+				/>;
         	appContent = <Inspiration
 				inspirationMonkeys={this.state.inspirationMonkeys}
 				user={this.state.userEmail}/>
@@ -159,6 +167,7 @@ constructor(props) {
 
 	logOut() {
 		this.setState({loggedIn: false});
+        this.setState({isOnInspiration: false});
 		localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("userName");

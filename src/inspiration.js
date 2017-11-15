@@ -19,10 +19,15 @@ export default class Inspiration extends React.Component {
             }
         ).slice(0, 10);
 
+
+
+
     }
 
     renderItems() {
-        return this.state.inspirationMonkeys.map((monkey, key) =>
+        return this.state.inspirationMonkeys.sort((a, b) => {
+            return (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0);
+        }).map((monkey, key) =>
             (<InspirationListItem key={key} id={monkey._id} {...monkey} />));
     }
 

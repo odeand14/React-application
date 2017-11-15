@@ -13,7 +13,17 @@ export default class Header extends React.Component {
 
         let createMonkeyBar, searchbar, logOut;
 
-        if (this.props.loggedIn) {
+        if (this.props.isOnInspiration) {
+            createMonkeyBar = <li><h3>Inspiration</h3></li>
+            searchbar = <li className="nav-item mx-2">
+                <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
+            </li>;
+            logOut = <li className="nav-item mx-2">
+                <span onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info mx-2">Welcome, {this.props.user}!</span>
+                <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+            </li>
+
+        } else if (this.props.loggedIn) {
             createMonkeyBar = <CreateMonkey
                 monkeys={this.props.monkeys}
                 createMonkey={this.props.createMonkey.bind(this)} />;
@@ -24,10 +34,6 @@ export default class Header extends React.Component {
                 <span onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info mx-2">Welcome, {this.props.user}!</span>
             <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
             </li>
-        } else {
-            searchbar = <li className="nav-item mx-2">
-                <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
-            </li>;
         }
 
         return(
