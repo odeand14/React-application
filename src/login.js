@@ -94,7 +94,8 @@ export default class Login extends React.Component{
         const user = {
             name: this.refs.createName.value,
             email: this.refs.createEmail.value,
-            password: this.refs.createPassword.value
+            password: this.refs.createPassword.value,
+            repeatPassword: this.refs.repeat.value
         };
 
         this.props.createUser(user);

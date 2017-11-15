@@ -14,7 +14,7 @@ constructor(props) {
 		monkeys: [],
 		search: [],
 		loggedIn: false,
-		isOnCreate: false,
+		isOnInspiration: false,
 		user: "",
 		userEmail: ""
 	};
@@ -111,6 +111,14 @@ constructor(props) {
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(user)
         }).then(response => response.json())
+			.then(json => {
+                if (json.message !== undefined) {
+                    alert(json.message);
+                } else {
+                	const newUser = {email: user.email, password: user.password};
+                	this.login(newUser);
+				}
+			})
             .catch(err => document.write(err));
     }
 
