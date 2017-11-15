@@ -188,9 +188,8 @@ app.get("/monkeys/:email", (req, res) => {
     })
 });
 
-app.get("/monkeys/public", (req, res) => {
-
-    Monkey.find({isPublic: true}, (err, monkeys) => {
+app.get("/monkeys/public/:public", (req, res) => {
+    Monkey.find({isPublic: req.params.public}, (err, monkeys) => {
         if (err) {
             res.status(500).send(err);
             return;
@@ -201,7 +200,7 @@ app.get("/monkeys/public", (req, res) => {
 });
 
 app.put("/monkeys/public/:id", (req, res) => {
-
+    console.log("yolo");
     Monkey.findByIdAndUpdate(req.params.id, {isPublic: req.body.isPublic}, (err, updatedMonkey) => {
         if (err) {
             res.status(500).send(err);

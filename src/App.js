@@ -17,7 +17,8 @@ constructor(props) {
 		loggedIn: false,
 		isOnInspiration: false,
 		user: "",
-		userEmail: ""
+		userEmail: "",
+        inspirationMonkeys: this.findPublicMonkeys(true),
 	};
 
 	if (localStorage.getItem("token")) {
@@ -58,7 +59,8 @@ constructor(props) {
 				savePublicMonkey={this.savePublicMonkey.bind(this)}
 			/>;
 			header = <Header
-				user ={this.state.user}
+				goToInspirationSite={this.goToInspirationSite.bind(this)}
+				user={this.state.user}
 				logOut={this.logOut.bind(this)}
 				loggedIn={this.state.loggedIn}
 				monkeys={this.state.monkeys}
@@ -66,8 +68,10 @@ constructor(props) {
 				searchMonkeys={this.searchMonkeys.bind(this)}
 			/>
         } else {
+			header = <div></div>
         	appContent = <Inspiration
-				findPublicMonkeys={this.findPublicMonkeys.bind(this)}/>
+				inspirationMonkeys={this.state.inspirationMonkeys}
+				user={this.state.userEmail}/>
 		}
 
         return (
@@ -78,6 +82,10 @@ constructor(props) {
 			</div>
 
 		);
+	}
+
+	goToInspirationSite() {
+		this.setState({isOnInspiration: !this.state.isOnInspiration});
 	}
 
 	isLoggedIn() {
@@ -228,12 +236,12 @@ constructor(props) {
 
     }
 
-	findPublicMonkeys() {
+	findPublicMonkeys(isPublic) {
 
-		fetch(`/monkeys/public`)
+		fetch(`/monkeys/public/${isPublic}`)
 			.then(response => response.json())
 			.then(monkeys => this.setState({
-				monkeys: monkeys
+                inspirationMonkeys: monkeys
 			})).catch(err => document.write(err));
 	}
 
