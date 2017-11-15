@@ -8,7 +8,8 @@ export default class MonkeyListItem extends React.Component {
         this.state = {
             name: "",
             race: "",
-            isEditing: false
+            isEditing: false,
+            isPublic: false
         }
     }
 
@@ -41,6 +42,13 @@ export default class MonkeyListItem extends React.Component {
                             ref="editRace" />
                     </td>
                     <td>
+                        <input type="checkbox" onClick={() => {
+                            this.setState({
+                                isPublic: !this.state.isPublic
+                            })
+                        }} value={this.state.isPublic}/>
+                    </td>
+                    <td>
                         <button className="btn btn-primary mx-1" onClick={this.onSaveClick.bind(this)}>Save</button>
                         <button className="btn btn-warning mx-1" onClick={this.onCancelClick.bind(this)}>Cancel</button>
                     </td>
@@ -52,6 +60,13 @@ export default class MonkeyListItem extends React.Component {
                     </td>
                     <td className="lead">
                         {this.props.race}
+                    </td>
+                    <td>
+                        <input type="checkbox" onClick={() => {
+                            this.setState({
+                                isPublic: !this.state.isPublic
+                            })
+                        }} value={this.state.isPublic}/>
                     </td>
                     <td>
                         <button className="btn btn-primary mx-1" disabled={!this.props.isLoggedIn} onClick={this.onEditClick.bind(this)} >Edit</button>

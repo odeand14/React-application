@@ -167,6 +167,19 @@ app.get("/monkeys", (req, res) => {
     });
 });
 
+app.get("/monkeys/:email", (req, res) => {
+
+    Monkey.find({user: req.params.email}, (err, monkeys) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(monkeys)
+    })
+});
+
+
+
 app.post("/monkeys", (req, res) => {
 
     const email = tokenExists(req, res);

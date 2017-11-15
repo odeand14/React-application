@@ -7,6 +7,7 @@ export default class MonkeyListHeader extends React.Component {
                 <tr className="lead">
                     <th>Name</th>
                     <th>Race</th>
+                    <th>Public</th>
                     <th>Action</th>
                 </tr>
             </thead>

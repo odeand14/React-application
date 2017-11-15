@@ -32,7 +32,7 @@ export default class CreateMonkey extends React.Component {
 
     handleCreate(event) {
         event.preventDefault();
-        const user = JSON.parse(localStorage.getItem("user"));
+        const user = localStorage.getItem("user");
         const monkey = {
             name: this.refs.name.value,
             race: this.refs.race.value,

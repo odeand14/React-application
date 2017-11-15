@@ -14,18 +14,20 @@ constructor(props) {
 		monkeys: [],
 		search: [],
 		loggedIn: false,
-		isOnCreate: false
+		isOnCreate: false,
+		user: "",
+		userEmail: ""
 	};
 
 	if (localStorage.getItem("token")) {
 		this.state.loggedIn = true;
+		this.state.user = localStorage.getItem("userName");
+		this.state.userEmail = localStorage.getItem("user");
 	}
 
-	fetch("/monkeys")
-		.then(response => response.json())
-		.then(monkeys => this.setState({
-		monkeys: monkeys
-	})).catch(err => document.write(err));
+	if (this.state.loggedIn) {
+		this.findUsersMonkeys(this.state.userEmail);
+    }
 
 }
 
@@ -43,7 +45,8 @@ constructor(props) {
         if (!this.state.loggedIn) {
             appContent = <Login
 				createUser={this.createUser.bind(this)}
-				login={this.login.bind(this)}/>;
+				login={this.login.bind(this)}
+				findUsersMonkeys={this.findUsersMonkeys.bind(this)}/>;
 			header = <div></div>
         } else {
             appContent = <MonkeyList
@@ -53,15 +56,13 @@ constructor(props) {
 				isLoggedIn={this.state.loggedIn}
 			/>;
 			header = <Header
+				user ={this.state.user}
 				logOut={this.logOut.bind(this)}
 				loggedIn={this.state.loggedIn}
-				login={this.login.bind(this)}
-				isOnCreate={this.state.isOnCreate}
 				monkeys={this.state.monkeys}
 				createMonkey={this.createMonkey.bind(this)}
-				history={this.props.history}
 				searchMonkeys={this.searchMonkeys.bind(this)}
-				setOnCreate={this.setOnCreate.bind(this)}/>
+			/>
         }
 
         return (
@@ -78,9 +79,6 @@ constructor(props) {
 		return this.state.loggedIn;
 	}
 
-	setOnCreate() {
-		this.setState({isOnCreate: !this.state.isOnCreate});
-	}
 
 	searchMonkeys(event) {
         this.setState({search: event.target.value.substr(0, 20)});
@@ -128,7 +126,10 @@ constructor(props) {
                 } else {
 					localStorage.setItem('token', json.token);
 					this.setState({loggedIn: true});
-					localStorage.setItem('user', JSON.stringify(json.user.email));
+					localStorage.setItem('user', json.user.email);
+					this.setState({userEmail: json.user.email});
+                    localStorage.setItem('userName', json.user.name);
+                    this.setState({user: json.user.name})
             	}
         	})
 			.catch(err => document.write(err));
@@ -139,6 +140,7 @@ constructor(props) {
 		this.setState({loggedIn: false});
 		localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("userName");
 	}
 
     saveMonkey(oldMonkey, newMonkey) {
@@ -178,6 +180,15 @@ constructor(props) {
 			.catch(err => document.write(err));
 
 
+	}
+
+	findUsersMonkeys(user) {
+
+        fetch(`/monkeys/${user}`)
+            .then(response => response.json())
+            .then(monkeys => this.setState({
+                monkeys: monkeys
+            })).catch(err => document.write(err));
 	}
 
 	updateMonkey(monkeyToUpdate, updatedMonkey) {

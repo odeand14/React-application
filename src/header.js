@@ -23,7 +23,8 @@ export default class Header extends React.Component {
                             <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
                         </li>;
             logOut = <li className="nav-item mx-2">
-                <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+                <span className="badge badge-info mx-2">Welcome {this.props.user}!</span>
+            <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
             </li>
         } else {
             searchbar = <li className="nav-item mx-2">

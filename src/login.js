@@ -21,17 +21,17 @@ export default class Login extends React.Component{
                             <h3 className="my-3">New user?</h3>
                             <div className="form-group">
                                 <label className="form-control-label">Name:</label>
-                                <input id="newName" className="form-control" type="text" placeholder="Name" ref="name" required/>
+                                <input className="form-control" type="text" placeholder="Name" ref="createName" required/>
                                 <small className="form-text text-muted">Example: Firstname Lastname</small>
                             </div>
                             <div className="form-group">
                                 <label className="form-control-label" htmlFor="newEmail">Email:</label>
-                                <input id="newEmail" className="form-control form-control-danger" type="email" placeholder="e-mail" ref="email" required/>
+                                <input id="newEmail" className="form-control form-control-danger" type="email" placeholder="e-mail" ref="createEmail" required/>
                                 <small className="form-text text-muted">Example: youremail@something.com</small>
                             </div>
                             <div className="form-group">
                                 <label className="form-control-label">Password:</label>
-                                <input id="newPass" className="form-control" type="password" placeholder="Password" ref="password" required/>
+                                <input id="newPass" className="form-control" type="password" placeholder="Password" ref="createPassword" required/>
                                 <small className="form-text text-muted">Example: No examples here! Youre on your own ;)</small>
                             </div>
                             <div className="form-group">
@@ -39,8 +39,8 @@ export default class Login extends React.Component{
                                 <input id="repeatPass" className="form-control" type="password" placeholder="Repeat password" ref="repeat" required/>
                                 <small className="form-text text-muted">Same input as above</small>
                             </div>
-                            <div className="text-center">
-                                <button className="btn btn-primary mx-1 my-2 text-center">Create</button>
+                            <div className="form-group text-center">
+                                <button type="submit" className="btn btn-primary mx-1 my-2 text-center">Create</button>
                             </div>
                         </form>
                     </div>
@@ -48,7 +48,7 @@ export default class Login extends React.Component{
                     <div className="justify-content-center col-4 mx-3 my-5">
                         <form className="" onSubmit={this.handleLogin.bind(this)} acceptCharset="UTF-8">
                             <h3 className="my-3">Existing user?</h3>
-                            <div className="form-group has-success">
+                            <div className="form-group">
                                 <label className="form-control-label" htmlFor="exampleInputEmail2">Email:</label>
                                 <input id="oldEmail" type="email" className="form-control" ref="email" placeholder="e-mail" required/>
                                 <small className="form-text text-muted">Example: youremail@something.com</small>
@@ -80,6 +80,7 @@ export default class Login extends React.Component{
         };
 
         this.props.login(user);
+        this.props.findUsersMonkeys(user.email);
 
         this.refs.email.value = '';
         this.refs.password.value = '';
@@ -91,16 +92,17 @@ export default class Login extends React.Component{
 
 
         const user = {
-            name: this.refs.name.value,
-            email: this.refs.email.value,
-            password: this.refs.password.value
+            name: this.refs.createName.value,
+            email: this.refs.createEmail.value,
+            password: this.refs.createPassword.value
         };
 
         this.props.createUser(user);
 
-        this.refs.name.value = '';
-        this.refs.email.value = '';
-        this.refs.password.value = '';
+        this.refs.createName.value = '';
+        this.refs.createEmail.value = '';
+        this.refs.createPassword.value = '';
+        this.refs.repeat.value = '';
     }
 
 }
