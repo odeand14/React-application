@@ -54,6 +54,7 @@ constructor(props) {
 				saveMonkey={this.saveMonkey.bind(this)}
 				deleteMonkey={this.deleteMonkey.bind(this)}
 				isLoggedIn={this.state.loggedIn}
+				savePublicMonkey={this.savePublicMonkey.bind(this)}
 			/>;
 			header = <Header
 				user ={this.state.user}
@@ -197,6 +198,39 @@ constructor(props) {
             .then(monkeys => this.setState({
                 monkeys: monkeys
             })).catch(err => document.write(err));
+	}
+
+    savePublicMonkey(oldMonkey, newMonkey) {
+
+        let newMonkeyState = this.state.monkeys.map(monkey => {
+            if (monkey._id === oldMonkey.id) {
+                monkey.isPublic = newMonkey.isPublic
+            }
+            return monkey;
+        });
+        this.updatePublicMonkey(oldMonkey.id, newMonkey);
+        this.setState(prevState => ({
+            monkeys: newMonkeyState
+        }));
+    }
+
+    updatePublicMonkey(monkeyToUpdate, updatedMonkey) {
+
+        fetch(`/monkeys/public/${monkeyToUpdate}`, {
+            method: "PUT",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify(updatedMonkey)
+        }).catch(err => document.write(err));
+
+    }
+
+	findPublicMonkeys() {
+
+		fetch(`/monkeys/public`)
+			.then(response => response.json())
+			.then(monkeys => this.setState({
+				monkeys: monkeys
+			})).catch(err => document.write(err));
 	}
 
 	updateMonkey(monkeyToUpdate, updatedMonkey) {

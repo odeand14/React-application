@@ -188,6 +188,30 @@ app.get("/monkeys/:email", (req, res) => {
     })
 });
 
+app.get("/monkeys/public", (req, res) => {
+
+    Monkey.find({isPublic: true}, (err, monkeys) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(monkeys)
+    })
+
+});
+
+app.put("/monkeys/public/:id", (req, res) => {
+
+    Monkey.findByIdAndUpdate(req.params.id, {isPublic: req.body.isPublic}, (err, updatedMonkey) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(updatedMonkey);
+    })
+
+});
+
 
 
 app.post("/monkeys", (req, res) => {

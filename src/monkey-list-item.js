@@ -9,10 +9,9 @@ export default class MonkeyListItem extends React.Component {
             name: "",
             race: "",
             isEditing: false,
-            isPublic: false
+            isPublic: !this.props.isPublic
         }
     }
-
 
     render() {
         return(
@@ -42,11 +41,7 @@ export default class MonkeyListItem extends React.Component {
                             ref="editRace" />
                     </td>
                     <td>
-                        <input type="checkbox" onClick={() => {
-                            this.setState({
-                                isPublic: !this.state.isPublic
-                            })
-                        }} value={this.state.isPublic}/>
+                        <input type="checkbox" onChange={this.onPublicClick.bind(this)} defaultChecked={this.props.isPublic}/>
                     </td>
                     <td>
                         <button className="btn btn-primary mx-1" onClick={this.onSaveClick.bind(this)}>Save</button>
@@ -62,11 +57,7 @@ export default class MonkeyListItem extends React.Component {
                         {this.props.race}
                     </td>
                     <td>
-                        <input type="checkbox" onClick={() => {
-                            this.setState({
-                                isPublic: !this.state.isPublic
-                            })
-                        }} value={this.state.isPublic}/>
+                        <input type="checkbox" onChange={this.onPublicClick.bind(this)} defaultChecked={this.props.isPublic}/>
                     </td>
                     <td>
                         <button className="btn btn-primary mx-1" disabled={!this.props.isLoggedIn} onClick={this.onEditClick.bind(this)} >Edit</button>
@@ -76,6 +67,23 @@ export default class MonkeyListItem extends React.Component {
             )}
             </tbody>
         );
+    }
+
+    onPublicClick() {
+        this.setState({
+            isPublic: !this.state.isPublic
+        });
+
+        console.log(this.state.isPublic);
+
+        const oldMonkey = {
+            id: this.props.id
+        };
+        const newMonkey = {
+            isPublic: this.state.isPublic
+        };
+        this.props.savePublicMonkey(oldMonkey, newMonkey)
+
     }
 
     onEditClick() {
