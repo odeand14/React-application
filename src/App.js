@@ -3,6 +3,7 @@ import _ from "lodash";
 import Header from "./header";
 import MonkeyList from "./monkey-list";
 import Login from "./login";
+import Inspiration from "./inspiration";
 
 class App extends Component {
 
@@ -48,7 +49,7 @@ constructor(props) {
 				login={this.login.bind(this)}
 				findUsersMonkeys={this.findUsersMonkeys.bind(this)}/>;
 			header = <div></div>
-        } else {
+        } else if (!this.state.isOnInspiration) {
             appContent = <MonkeyList
 				filteredMonkeys={filteredMonkeys}
 				saveMonkey={this.saveMonkey.bind(this)}
@@ -64,7 +65,10 @@ constructor(props) {
 				createMonkey={this.createMonkey.bind(this)}
 				searchMonkeys={this.searchMonkeys.bind(this)}
 			/>
-        }
+        } else {
+        	appContent = <Inspiration
+				findPublicMonkeys={this.findPublicMonkeys.bind(this)}/>
+		}
 
         return (
 

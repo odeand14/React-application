@@ -74,8 +74,6 @@ export default class MonkeyListItem extends React.Component {
             isPublic: !this.state.isPublic
         });
 
-        console.log(this.state.isPublic);
-
         const oldMonkey = {
             id: this.props.id
         };
