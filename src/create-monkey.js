@@ -20,12 +20,14 @@ export default class CreateMonkey extends React.Component {
 
     render() {
         return(
+            <li className="nav-item mx-2">
             <form className="form-inline" onSubmit={this.handleCreate.bind(this)}>
                 <input className="form-control mx-1" type="text" placeholder="name" ref="name" required/>
                 <input className="form-control mx-1" type="text" placeholder="race" ref="race" required/>
                 <button className="btn btn-primary mx-1">Create</button>
                 {this.renderError()}
             </form>
+            </li>
         )
 
     }

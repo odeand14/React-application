@@ -3,24 +3,19 @@ import CreateMonkey from "./create-monkey";
 
 export default class Header extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
 
-
-        let createMonkeyBar, searchbar, logOut;
+        let createMonkeyBar, searchbar, logOut, switchPage;
 
         if (this.props.isOnInspiration) {
-            createMonkeyBar = <li><h3>Inspiration</h3></li>
-            searchbar = <li className="nav-item mx-2">
-                <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
-            </li>;
+            createMonkeyBar = <li className="nav-item mx-2"><h3>Inspiration</h3></li>;
+            searchbar = null;
             logOut = <li className="nav-item mx-2">
-                <span onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info mx-2">Welcome, {this.props.user}!</span>
                 <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+            </li>;
+            switchPage = <li className="nav-item mx-2">
+                <button onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info">Welcome, {this.props.user}!<br/>Click for Homepage</button>
+
             </li>
 
         } else if (this.props.loggedIn) {
@@ -31,8 +26,10 @@ export default class Header extends React.Component {
                             <input type="text" className="form-inline form-control" placeholder="Search on name" onChange={this.props.searchMonkeys.bind(this)}/>
                         </li>;
             logOut = <li className="nav-item mx-2">
-                <span onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info mx-2">Welcome, {this.props.user}!</span>
-            <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+                        <button className="btn btn-info" onClick={this.props.logOut}>Log Out</button>
+                    </li>;
+            switchPage = <li className="nav-item mx-2">
+                <button onClick={this.props.goToInspirationSite.bind(this)} className="badge badge-info">Welcome, {this.props.user}!<br/>Click for Inspiration</button>
             </li>
         }
 
@@ -46,7 +43,7 @@ export default class Header extends React.Component {
                 <ul className="navbar-nav ml-auto">
 
                     {searchbar}
-
+                    {switchPage}
                     {logOut}
 
                 </ul>

@@ -2,11 +2,6 @@ import React from "react";
 
 export default class InspirationListItem extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-    }
-
     render() {
         return (
             <tbody>

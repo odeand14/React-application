@@ -5,12 +5,6 @@ import MonkeyListItem from "./monkey-list-item.js";
 
 export default class MonkeyList extends React.Component {
 
-    constructor(props) {
-
-        super(props);
-
-    }
-
     renderItems() {
         const props = _.omit(this.props, "monkeys"); 
         return this.props.filteredMonkeys.map((monkey, key) =>

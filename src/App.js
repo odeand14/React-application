@@ -22,9 +22,9 @@ constructor(props) {
 	};
 
 	if (localStorage.getItem("token")) {
-		this.state.loggedIn = true;
-		this.state.user = localStorage.getItem("userName");
-		this.state.userEmail = localStorage.getItem("user");
+        this.state.loggedIn = true;
+        this.state.user = localStorage.getItem("userName");
+        this.state.userEmail = localStorage.getItem("user");
 	}
 
 	if (this.state.loggedIn) {

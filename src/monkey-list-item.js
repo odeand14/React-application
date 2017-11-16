@@ -6,8 +6,8 @@ export default class MonkeyListItem extends React.Component {
         super(props);
         
         this.state = {
-            name: "",
-            race: "",
+            name: this.props.name,
+            race: this.props.race,
             isEditing: false,
             isPublic: !this.props.isPublic
         }
