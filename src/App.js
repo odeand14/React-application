@@ -18,7 +18,7 @@ constructor(props) {
 		isOnInspiration: false,
 		user: "",
 		userEmail: "",
-        inspirationMonkeys: this.findPublicMonkeys(true),
+        inspirationMonkeys: [],
 	};
 
 	if (localStorage.getItem("token")) {
@@ -29,9 +29,34 @@ constructor(props) {
 
 	if (this.state.loggedIn) {
 		this.findUsersMonkeys(this.state.userEmail);
+		this.findPublicMonkeys(true);
     }
 
 }
+
+    componentWillMount() {
+        const url = 'ws://localhost:1234';
+        const connection = new WebSocket(url);
+        connection.onmessage = (json) => {
+            let munk = JSON.parse(json.data);
+
+            const index = this.state.inspirationMonkeys.findIndex(x => x.name === munk.name);
+			let newMonkeyState = this.state.inspirationMonkeys;
+
+			if (index === -1) {
+                newMonkeyState.push(munk);
+                this.setState(prevState => ({
+                    inspirationMonkeys: newMonkeyState
+                }));
+			} else {
+                newMonkeyState.splice(index,1);
+                this.setState(prevState => ({
+                    inspirationMonkeys: newMonkeyState
+                }));
+
+			}
+        }
+    }
 
 
 	render() {
@@ -41,6 +66,14 @@ constructor(props) {
 				return monkey.name.toLowerCase().indexOf(this.state.search) !== -1;
 			}
 		);
+
+		let publicMonkeys = this.state.inspirationMonkeys.filter(
+            (monkey) => {
+                return monkey.user.indexOf(this.state.userEmail) !== 0;
+            }
+        ).sort((a, b) => {
+            return (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0);
+        }).slice(0, 10);
 
         let appContent, header;
 
@@ -57,6 +90,7 @@ constructor(props) {
 				deleteMonkey={this.deleteMonkey.bind(this)}
 				isLoggedIn={this.state.loggedIn}
 				savePublicMonkey={this.savePublicMonkey.bind(this)}
+				sendPublicMonkey={this.sendPublicMonkey.bind(this)}
 			/>;
 			header = <Header
 				isOnInspiration={this.state.isOnInspiration}
@@ -78,7 +112,7 @@ constructor(props) {
 				searchMonkeys={this.searchMonkeys.bind(this)}
 				/>;
         	appContent = <Inspiration
-				inspirationMonkeys={this.state.inspirationMonkeys}
+				publicMonkeys={publicMonkeys}
 				user={this.state.userEmail}/>
 		}
 
@@ -221,11 +255,20 @@ constructor(props) {
             })).catch(err => document.write(err));
 	}
 
+	sendPublicMonkey(monkey) {
+        const url = 'ws://localhost:1234';
+        const connection = new WebSocket(url);
+        connection.onopen = () => connection.send(JSON.stringify(monkey));
+
+	}
+
     savePublicMonkey(oldMonkey, newMonkey) {
+		let nMonkey = "";
 
         let newMonkeyState = this.state.monkeys.map(monkey => {
             if (monkey._id === oldMonkey.id) {
-                monkey.isPublic = newMonkey.isPublic
+                monkey.isPublic = newMonkey.isPublic;
+                nMonkey = monkey;
             }
             return monkey;
         });
@@ -233,6 +276,7 @@ constructor(props) {
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));
+        this.sendPublicMonkey(nMonkey);
     }
 
     updatePublicMonkey(monkeyToUpdate, updatedMonkey) {

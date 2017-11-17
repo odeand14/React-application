@@ -200,7 +200,6 @@ app.get("/monkeys/public/:public", (req, res) => {
 });
 
 app.put("/monkeys/public/:id", (req, res) => {
-    console.log("yolo");
     Monkey.findByIdAndUpdate(req.params.id, {isPublic: req.body.isPublic}, (err, updatedMonkey) => {
         if (err) {
             res.status(500).send(err);
@@ -274,4 +273,6 @@ app.use('/', (req, res) => {
 });
 
 
-app.listen(PORT, () => console.log("Listening on port " + PORT + "!"));
+const server = app.listen(PORT, () => console.log("Listening on port " + PORT + "!"));
+
+require('./sockets').connect(server);
