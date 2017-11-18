@@ -102,7 +102,8 @@ export default class MonkeyListItem extends React.Component {
         };
         const newMonkey = {
             name: this.state.name,
-            race: this.state.race
+            race: this.state.race,
+            isPublic: !this.state.isPublic
         };
         this.props.saveMonkey(oldMonkey, newMonkey);
         this.setState({isEditing: false});

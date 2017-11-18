@@ -35,16 +35,15 @@ constructor(props) {
 }
 
     componentWillMount() {
-        const url = 'ws://localhost:1234';
-        const connection = new WebSocket(url);
+        const connection = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/ws");
         connection.onmessage = (json) => {
-            let munk = JSON.parse(json.data);
+            let monkeyToHandle = JSON.parse(json.data);
 
-            const index = this.state.inspirationMonkeys.findIndex(x => x.name === munk.name);
+            const index = this.state.inspirationMonkeys.findIndex(x => x._id === monkeyToHandle._id);
 			let newMonkeyState = this.state.inspirationMonkeys;
 
 			if (index === -1) {
-                newMonkeyState.push(munk);
+                newMonkeyState.push(monkeyToHandle);
                 this.setState(prevState => ({
                     inspirationMonkeys: newMonkeyState
                 }));
@@ -208,15 +207,17 @@ constructor(props) {
 	}
 
     saveMonkey(oldMonkey, newMonkey) {
-
+        let nMonkey = "";
         let newMonkeyState = this.state.monkeys.map(monkey => {
-            if (monkey.name === oldMonkey.name) {
+            if (monkey._id === oldMonkey.id) {
                 if(monkey.name !== "") {
                     monkey.name = newMonkey.name;
                 }
                 if(monkey.race !== "") {
                     monkey.race = newMonkey.race;
                 }
+                monkey.isPublic = newMonkey.isPublic;
+                nMonkey = monkey;
             }
             return monkey;
         });
@@ -224,6 +225,7 @@ constructor(props) {
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));
+        this.sendPublicMonkey(nMonkey);
     }
 	
 	deleteMonkey(monkeyToDelete) {
@@ -256,8 +258,7 @@ constructor(props) {
 	}
 
 	sendPublicMonkey(monkey) {
-        const url = 'ws://localhost:1234';
-        const connection = new WebSocket(url);
+        const connection = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/ws");
         connection.onopen = () => connection.send(JSON.stringify(monkey));
 
 	}
@@ -272,7 +273,7 @@ constructor(props) {
             }
             return monkey;
         });
-        this.updatePublicMonkey(oldMonkey.id, newMonkey);
+        this.updatePublicMonkey(oldMonkey.id, nMonkey);
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));

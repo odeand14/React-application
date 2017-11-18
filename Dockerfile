@@ -9,6 +9,7 @@ RUN yarn
 
 COPY build build
 COPY server/server.js server/server.js
+COPY server/sockets.js server/sockets.js
 
 EXPOSE 8080
 
