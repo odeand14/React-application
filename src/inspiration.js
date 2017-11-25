@@ -4,6 +4,11 @@ import InspirationListItem from "./inspiration-list-item";
 
 export default class Inspiration extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.props.findPublicMonkeys(true);
+    }
+
     renderItems() {
          return this.props.publicMonkeys.map((monkey, key) =>
             (<InspirationListItem key={key} id={monkey._id} {...monkey} />));

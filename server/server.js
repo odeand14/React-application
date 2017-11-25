@@ -44,7 +44,6 @@ const tokenExists = (req, res) => {
         const userName = req.body.user;
 
         if (decodedToken.email === userName) {
-            console.log(decodedToken);
             return jwtSimple.decode(token, jwtSecret);
         } else {
             res.status(401).send({message: 'Username does not match!'});
@@ -235,6 +234,12 @@ app.post("/monkeys", (req, res) => {
 
 app.delete("/monkeys/:id", (req, res) => {
 
+    const email = tokenExists(req, res);
+    if (!email) {
+        res.status(401).send({message: 'Need to log in to delete a little monkey!'});
+        return;
+    }
+
     Monkey.findByIdAndRemove(req.params.id, (err, deletedMonkey) => {
         if (err) {
             res.status(500).send(err);
@@ -260,7 +265,6 @@ app.put("/monkeys/:id", (req, res) => {
 app.use('/static', express.static(path.resolve(__dirname, '..', 'build', 'static')));
 
 app.use('/favicon.ico', (req, res) => {
-    console.log('hello fav');
     res.sendFile(path.resolve(__dirname, '..', 'build', 'favicon.ico'));
 });
 

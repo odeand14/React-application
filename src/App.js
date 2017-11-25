@@ -29,31 +29,18 @@ constructor(props) {
 
 	if (this.state.loggedIn) {
 		this.findUsersMonkeys(this.state.userEmail);
-		this.findPublicMonkeys(true);
     }
 
 }
 
     componentWillMount() {
-        const connection = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/ws");
+        const connection =
+			new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://")
+			+ window.location.host + "/ws");
+
         connection.onmessage = (json) => {
-            let monkeyToHandle = JSON.parse(json.data);
-
-            const index = this.state.inspirationMonkeys.findIndex(x => x._id === monkeyToHandle._id);
-			let newMonkeyState = this.state.inspirationMonkeys;
-
-			if (index === -1) {
-                newMonkeyState.push(monkeyToHandle);
-                this.setState(prevState => ({
-                    inspirationMonkeys: newMonkeyState
-                }));
-			} else {
-                newMonkeyState.splice(index,1);
-                this.setState(prevState => ({
-                    inspirationMonkeys: newMonkeyState
-                }));
-
-			}
+        	let monkeyToHandle = JSON.parse(json.data);
+            this.updateInspirationalMonkeys(monkeyToHandle);
         }
     }
 
@@ -111,6 +98,7 @@ constructor(props) {
 				searchMonkeys={this.searchMonkeys.bind(this)}
 				/>;
         	appContent = <Inspiration
+                findPublicMonkeys={this.findPublicMonkeys.bind(this)}
 				publicMonkeys={publicMonkeys}
 				user={this.state.userEmail}/>
 		}
@@ -123,6 +111,26 @@ constructor(props) {
 			</div>
 
 		);
+	}
+
+	updateInspirationalMonkeys(monkeyToHandle) {
+
+        const index = this.state.inspirationMonkeys.findIndex(x => x._id === monkeyToHandle._id);
+        let newMonkeyState = this.state.inspirationMonkeys;
+
+        if (index === -1) {
+            newMonkeyState.push(monkeyToHandle);
+            this.setState(prevState => ({
+                inspirationMonkeys: newMonkeyState
+            }));
+        } else {
+            newMonkeyState.splice(index,1);
+            this.setState(prevState => ({
+                inspirationMonkeys: newMonkeyState
+            }));
+
+        }
+
 	}
 
 	goToInspirationSite() {
@@ -201,6 +209,7 @@ constructor(props) {
 	logOut() {
 		this.setState({loggedIn: false});
         this.setState({isOnInspiration: false});
+        this.setState({monkeys: [], inspirationMonkeys: [], user: "", userEmail: ""});
 		localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("userName");
@@ -229,13 +238,16 @@ constructor(props) {
     }
 	
 	deleteMonkey(monkeyToDelete) {
-
+    const user = localStorage.getItem("user");
+    const userItems = {user: user};
 		fetch(`/monkeys/${monkeyToDelete}`, {
 			method: "DELETE",
-			headers: {"Content-type": "application/json"},
+			headers: {
+			    "Content-type": "application/json",
+                'Authorization': localStorage.getItem("token")},
+            body: JSON.stringify(userItems)
 		}).then(response => response.json())
             .then(json => {
-                console.log(json.message);
                 if (json.message !== undefined) {
                     alert(json.message);
                 } else {

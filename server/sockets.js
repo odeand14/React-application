@@ -4,10 +4,16 @@ exports.connect = httpServer => {
     const wsServer = new ws.Server({server: httpServer});
 
 
+    function heartbeat() {
+        this.isAlive = true;
+    }
+
     const clients = [];
 
     wsServer.on('connection', socket => {
+        console.log('Client connected.');
         clients.push(socket);
+        socket.on('pong', heartbeat);
 
         socket.on('close', function() {
             clients.splice(clients.indexOf(socket), 1);
@@ -27,5 +33,14 @@ exports.connect = httpServer => {
             });
         });
     });
+
+    const interval = setInterval(function ping() {
+        wsServer.clients.forEach(ws => {
+            if (ws.isAlive === false) return ws.terminate();
+
+            ws.isAlive = false;
+            ws.ping('', false, true);
+        });
+    }, 30000);
 
 };
