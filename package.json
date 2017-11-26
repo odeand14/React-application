@@ -8,6 +8,7 @@
     "express": "^4.16.0",
     "jwt-simple": "^0.5.1",
     "loadash": "^1.0.0",
+    "mocha": "^4.0.1",
     "mongoose": "^4.11.13",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",

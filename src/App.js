@@ -148,22 +148,22 @@ constructor(props) {
 
 	createMonkey(monkey) {
 
-			fetch("/monkeys", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					'Authorization': localStorage.getItem("token")
-				},
-				body: JSON.stringify(monkey)
-			}).then(response => response.json())
-				.then(json => {
-					if (json.message !== undefined) {
-                        alert(json.message);
-					} else {
-                        this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))
-                    }
-				})
-				.catch(err => document.write(err));
+        fetch("/monkeys", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': localStorage.getItem("token")
+            },
+            body: JSON.stringify(monkey)
+        }).then(response => response.json())
+            .then(json => {
+                if (json.message !== undefined) {
+                    alert(json.message);
+                } else {
+                    this.setState(prevState => ({monkeys: [...prevState.monkeys, json]}))
+                }
+            })
+            .catch(err => document.write(err));
 	}
 
     createUser(user) {
@@ -313,9 +313,18 @@ constructor(props) {
 
         fetch(`/monkeys/${monkeyToUpdate}`, {
             method: "PUT",
-            headers: {"Content-type": "application/json"},
+            headers: {
+                "Content-type": "application/json",
+                'Authorization': localStorage.getItem("token")},
 			body: JSON.stringify(updatedMonkey)
-        }).catch(err => document.write(err));
+        }).then(response => response.json())
+            .then(json => {
+                if (json.message !== undefined) {
+                    alert(json.message);
+                } else {
+                    console.log("yolo");
+                }
+            }).catch(err => document.write(err));
 
     }
 

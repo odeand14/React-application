@@ -39,7 +39,6 @@ const User = mongoose.model("User", {
 
 const tokenExists = (req, res) => {
     const token = req.headers.authorization;
-
     if (token && (token.split(".").length === 3)) {
         try {
             return jwtSimple.decode(token, jwtSecret);
