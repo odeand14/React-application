@@ -238,14 +238,12 @@ constructor(props) {
     }
 	
 	deleteMonkey(monkeyToDelete) {
-    const user = localStorage.getItem("user");
-    const userItems = {user: user};
+
 		fetch(`/monkeys/${monkeyToDelete}`, {
 			method: "DELETE",
 			headers: {
 			    "Content-type": "application/json",
-                'Authorization': localStorage.getItem("token")},
-            body: JSON.stringify(userItems)
+                'Authorization': localStorage.getItem("token")}
 		}).then(response => response.json())
             .then(json => {
                 if (json.message !== undefined) {

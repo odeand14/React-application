@@ -2,7 +2,7 @@ const express = require("express");
 const request = require("supertest");
 const app = express();
 
-const api = require("../src/app");
+const api = require("../App");
 app.use(api);
 
 describe("/login", () => {
@@ -10,4 +10,4 @@ describe("/login", () => {
 });
 
 
-const initServer = require("../server/server");
+const initServer = require("../../server/server");

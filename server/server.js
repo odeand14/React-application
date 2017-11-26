@@ -39,18 +39,15 @@ const User = mongoose.model("User", {
 
 const tokenExists = (req, res) => {
     const token = req.headers.authorization;
-    if (token && (token.split(".").length === 3)) {
-        const decodedToken = jwtSimple.decode(token, jwtSecret);
-        const userName = req.body.user;
 
-        if (decodedToken.email === userName) {
+    if (token && (token.split(".").length === 3)) {
+        try {
             return jwtSimple.decode(token, jwtSecret);
-        } else {
-            res.status(401).send({message: 'Username does not match!'});
+        } catch (error) {
             return false;
         }
     }
-    res.status(401).send({message: 'No token'});
+    res.status(401).send({message: 'You are not authorized for this action'});
     return false;
 };
 
@@ -107,6 +104,12 @@ app.post('/users', (req, res) => {
 });
 
 app.get("/users", (req, res) => {
+
+    const email = tokenExists(req, res);
+    if (!email) {
+        res.status(401).send({message: 'Need to log in to create a little monkey!'});
+        return;
+    }
 
     User.find((err, users) => {
         if (err) {
@@ -250,6 +253,24 @@ app.delete("/monkeys/:id", (req, res) => {
 
 });
 
+app.delete("/users/:id", (req, res) => {
+
+    const email = tokenExists(req, res);
+    if (!email) {
+        res.status(401).send({message: 'Need to log in to delete your account!'});
+        return;
+    }
+
+    User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(deletedUser);
+    });
+
+});
+
 app.put("/monkeys/:id", (req, res) => {
 
     Monkey.findByIdAndUpdate(req.params.id, {name: req.body.name, race: req.body.race, timestamp: new Date()}, (err, updatedMonkey) => {
@@ -280,3 +301,5 @@ app.use('/', (req, res) => {
 const server = app.listen(PORT, () => console.log("Listening on port " + PORT + "!"));
 
 require('./sockets').connect(server);
+
+module.exports = app;
