@@ -75,7 +75,6 @@ export default class Login extends React.Component{
         };
 
         this.props.login(user);
-        this.props.findUsersMonkeys(user.email);
 
         this.refs.email.value = '';
         this.refs.password.value = '';

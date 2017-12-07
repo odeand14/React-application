@@ -1,16 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from '../App';
+import Login from '../login';
 import renderer from 'react-test-renderer';
 
-describe('App', () => {
-    it('should be able to run tests', () => {
+describe('Login', () => {
+    it('should be able show login page', () => {
         expect(1 + 2).toEqual(3);
     });
 
     it('renders without crashing', () => {
         const div = renderer
             .create()
-        ReactDOM.render(<App/>, div);
     });
 });

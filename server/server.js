@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 1234;
 
 app.use((req, res, next) => {
     res.header("Access-Controll-Allow-Origin", "*");
-    res.header("Access-Controll-Allow-Methods", "GET, POST, DELETE");
+    res.header("Access-Controll-Allow-Methods", "GET, POST, DELETE, PUT");
     res.header("Access-Controll-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
 });
@@ -38,16 +38,24 @@ const User = mongoose.model("User", {
 });
 
 const tokenExists = (req, res) => {
-    const token = req.headers.authorization;
+    const data = req.headers.authorization.split(",");
+    const token = data[0];
+    const user = data[1];
+
     if (token && (token.split(".").length === 3)) {
         try {
-            return jwtSimple.decode(token, jwtSecret);
+            const tokenUser = jwtSimple.decode(token, jwtSecret);
+            if (tokenUser.email.localeCompare(user) === 0) {
+                return tokenUser;
+            }
         } catch (error) {
+            res.status(401).send({message: 'You are not authorized for this action'});
             return false;
         }
+    } else {
+        res.status(401).send({message: 'You are not authorized for this action'});
+        return false;
     }
-    res.status(401).send({message: 'You are not authorized for this action'});
-    return false;
 };
 
 
@@ -102,22 +110,6 @@ app.post('/users', (req, res) => {
 
 });
 
-app.get("/users", (req, res) => {
-
-    const email = tokenExists(req, res);
-    if (!email) {
-        res.status(401).send({message: 'Need to log in to create a little monkey!'});
-        return;
-    }
-
-    User.find((err, users) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.status(200).send(users);
-    });
-});
 
 app.post('/login', (req, res) => {
     const user = req.body;
@@ -136,7 +128,7 @@ app.post('/login', (req, res) => {
         if (err) {
             res.status(500).send(err);
         } else if (!result) {
-            res.status(401).send({message: 'User does not exist!'});
+            res.status(401).send({message: 'User does not exist or wrong password!'});
         } else {
             const passwordMatches = bcrypt.compareSync(
                 user.password,
@@ -144,7 +136,7 @@ app.post('/login', (req, res) => {
             );
 
             if (!passwordMatches) {
-                res.status(401).send({message: 'Wrong password'});
+                res.status(401).send({message: 'User does not exist or wrong password!'});
                 return;
             }
 
@@ -159,6 +151,46 @@ app.post('/login', (req, res) => {
 });
 
 
+
+// Created for testing, not using it in the app so commenting out as it is flawed.
+// Could change to only getting current User or somesuch, but no point when I'm not using it.
+// Keeping it here in case I wish to expand.
+
+// app.get("/users", (req, res) => {
+//
+//     const email = tokenExists(req, res);
+//     if (!email) {
+//         return;
+//     }
+//
+//     User.find((err, users) => {
+//         if (err) {
+//             res.status(500).send(err);
+//             return;
+//         }
+//         res.status(200).send(users);
+//     });
+// });
+
+// Likewise
+// app.delete("/users/:id", (req, res) => {
+//
+//     const email = tokenExists(req, res);
+//     if (!email) {
+//         return;
+//     }
+//
+//     User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
+//         if (err) {
+//             res.status(500).send(err);
+//             return;
+//         }
+//         res.status(200).send(deletedUser);
+//     });
+//
+// });
+
+
 const Monkey = mongoose.model("Monkey", {
     name: {type: String, required: true},
     race: {type: String, required: true},
@@ -169,6 +201,11 @@ const Monkey = mongoose.model("Monkey", {
 
 app.get("/monkeys", (req, res) => {
 
+    const email = tokenExists(req, res);
+    if (!email) {
+        return;
+    }
+
     Monkey.find((err, monkeys) => {
         if (err) {
             res.status(500).send(err);
@@ -178,46 +215,10 @@ app.get("/monkeys", (req, res) => {
     });
 });
 
-app.get("/monkeys/:email", (req, res) => {
-
-    Monkey.find({user: req.params.email}, (err, monkeys) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.status(200).send(monkeys)
-    })
-});
-
-app.get("/monkeys/public/:public", (req, res) => {
-    Monkey.find({isPublic: req.params.public}, (err, monkeys) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.status(200).send(monkeys)
-    })
-
-});
-
-app.put("/monkeys/public/:id", (req, res) => {
-    Monkey.findByIdAndUpdate(req.params.id, {isPublic: req.body.isPublic}, (err, updatedMonkey) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.status(200).send(updatedMonkey);
-    })
-
-});
-
-
-
 app.post("/monkeys", (req, res) => {
 
     const email = tokenExists(req, res);
     if (!email) {
-        res.status(401).send({message: 'Need to log in to create a little monkey!'});
         return;
     }
 
@@ -226,7 +227,7 @@ app.post("/monkeys", (req, res) => {
 
     monkey.save((err, savedMonkey) => {
         if (err) {
-            res.status(401).send(err);
+            res.status(500).send(err);
             return;
         }
         res.status(201).send(savedMonkey);
@@ -238,7 +239,6 @@ app.delete("/monkeys/:id", (req, res) => {
 
     const email = tokenExists(req, res);
     if (!email) {
-        res.status(401).send({message: 'Need to log in to delete a little monkey!'});
         return;
     }
 
@@ -252,25 +252,12 @@ app.delete("/monkeys/:id", (req, res) => {
 
 });
 
-app.delete("/users/:id", (req, res) => {
+app.put("/monkeys/:id", (req, res) => {
 
     const email = tokenExists(req, res);
     if (!email) {
-        res.status(401).send({message: 'Need to log in to delete your account!'});
         return;
     }
-
-    User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.status(200).send(deletedUser);
-    });
-
-});
-
-app.put("/monkeys/:id", (req, res) => {
 
     Monkey.findByIdAndUpdate(req.params.id, {name: req.body.name, race: req.body.race, timestamp: new Date()}, (err, updatedMonkey) => {
         if (err) {
@@ -281,6 +268,54 @@ app.put("/monkeys/:id", (req, res) => {
     })
 
 });
+
+app.get("/monkeys/:email", (req, res) => {
+    const user = tokenExists(req, res);
+    if (!user) {
+        return;
+    }
+    Monkey.find({user: user.email}, (err, monkeys) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(monkeys)
+    })
+});
+
+app.get("/monkeys/public/:public", (req, res) => {
+    const email = tokenExists(req, res);
+    if (!email) {
+        return;
+    }
+
+    Monkey.find({isPublic: "true"}, (err, monkeys) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(monkeys)
+    })
+
+});
+
+app.put("/monkeys/public/:id", (req, res) => {
+
+    const email = tokenExists(req, res);
+    if (!email) {
+        return;
+    }
+
+    Monkey.findByIdAndUpdate(req.params.id, {isPublic: req.body.isPublic}, (err, updatedMonkey) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(updatedMonkey);
+    })
+
+});
+
 
 app.use('/static', express.static(path.resolve(__dirname, '..', 'build', 'static')));
 

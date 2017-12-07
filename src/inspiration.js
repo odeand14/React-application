@@ -6,7 +6,7 @@ export default class Inspiration extends React.Component {
 
     constructor(props) {
         super(props);
-        this.props.findPublicMonkeys(true);
+        this.props.findPublicMonkeys();
     }
 
     renderItems() {

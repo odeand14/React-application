@@ -61,7 +61,7 @@ export default class MonkeyListItem extends React.Component {
                     </td>
                     <td>
                         <button className="btn btn-primary mx-1" disabled={!this.props.isLoggedIn} onClick={this.onEditClick.bind(this)} >Edit</button>
-                        <button className="btn btn-danger mx-1" disabled={!this.props.isLoggedIn} onClick={this.props.deleteMonkey.bind(this, this.props.id)}>Delete</button>
+                        <button className="btn btn-danger mx-1" disabled={!this.props.isLoggedIn} onClick={this.props.deleteMonkey.bind(this, this.props)}>Delete</button>
                     </td>
                 </tr>
             )}
@@ -75,6 +75,7 @@ export default class MonkeyListItem extends React.Component {
         });
 
         const oldMonkey = {
+            user: this.props.user,
             id: this.props.id
         };
         const newMonkey = {
@@ -98,6 +99,7 @@ export default class MonkeyListItem extends React.Component {
         const oldMonkey = {
             name: this.props.name,
             race: this.props.race,
+            user: this.props.user,
             id: this.props.id
         };
         const newMonkey = {

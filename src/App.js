@@ -11,23 +11,31 @@ constructor(props) {
 
 	super(props);
 
-	this.state = {
-		monkeys: [],
-		search: [],
-		loggedIn: false,
-		isOnInspiration: false,
-		user: "",
-		userEmail: "",
-        inspirationMonkeys: [],
-	};
-
 	if (localStorage.getItem("token")) {
-        this.state.loggedIn = true;
-        this.state.user = localStorage.getItem("userName");
-        this.state.userEmail = localStorage.getItem("user");
-	}
+	    this.state= {
+            monkeys: [],
+            search: [],
+            loggedIn: true,
+            isOnInspiration: false,
+            user: localStorage.getItem("userName"),
+            userEmail: localStorage.getItem("user"),
+            inspirationMonkeys: [],
+            token: localStorage.getItem("token"),
+        }
+	} else {
+        this.state = {
+            monkeys: [],
+            search: [],
+            loggedIn: false,
+            isOnInspiration: false,
+            user: "",
+            userEmail: "",
+            inspirationMonkeys: [],
+            token: ""
+        };
+    }
 
-	if (this.state.loggedIn) {
+    if (this.state.loggedIn) {
 		this.findUsersMonkeys(this.state.userEmail);
     }
 
@@ -45,13 +53,16 @@ constructor(props) {
     }
 
 
-	render() {
 
-		let filteredMonkeys = this.state.monkeys.filter(
-			(monkey) => {
-				return monkey.name.toLowerCase().indexOf(this.state.search) !== -1;
-			}
-		);
+	render() {
+        let filteredMonkeys = {};
+        if (this.state.monkeys.length > 0) {
+            filteredMonkeys = this.state.monkeys.filter(
+                (monkey) => {
+                    return monkey.name.toLowerCase().indexOf(this.state.search) !== -1;
+                }
+            );
+        }
 
 		let publicMonkeys = this.state.inspirationMonkeys.filter(
             (monkey) => {
@@ -67,14 +78,17 @@ constructor(props) {
             appContent = <Login
 				createUser={this.createUser.bind(this)}
 				login={this.login.bind(this)}
-				findUsersMonkeys={this.findUsersMonkeys.bind(this)}/>;
-			header = <div></div>
+                />;
+			header = null
         } else if (!this.state.isOnInspiration) {
             appContent = <MonkeyList
+                monkeys={this.state.monkeys}
 				filteredMonkeys={filteredMonkeys}
 				saveMonkey={this.saveMonkey.bind(this)}
 				deleteMonkey={this.deleteMonkey.bind(this)}
 				isLoggedIn={this.state.loggedIn}
+                userEmail={this.state.userEmail}
+                findUsersMonkeys={this.findUsersMonkeys.bind(this)}
 				savePublicMonkey={this.savePublicMonkey.bind(this)}
 				sendPublicMonkey={this.sendPublicMonkey.bind(this)}
 			/>;
@@ -95,7 +109,6 @@ constructor(props) {
 				user={this.state.user}
 				logOut={this.logOut.bind(this)}
 				loggedIn={this.state.loggedIn}
-				searchMonkeys={this.searchMonkeys.bind(this)}
 				/>;
         	appContent = <Inspiration
                 findPublicMonkeys={this.findPublicMonkeys.bind(this)}
@@ -147,12 +160,11 @@ constructor(props) {
 	}
 
 	createMonkey(monkey) {
-
         fetch("/monkeys", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': localStorage.getItem("token")
+                'Authorization': [this.state.token, this.state.userEmail]
             },
             body: JSON.stringify(monkey)
         }).then(response => response.json())
@@ -195,6 +207,7 @@ constructor(props) {
                     alert(json.message);
                 } else {
 					localStorage.setItem('token', json.token);
+					this.setState({token: json.token});
 					this.setState({loggedIn: true});
 					localStorage.setItem('user', json.user.email);
 					this.setState({userEmail: json.user.email});
@@ -230,7 +243,7 @@ constructor(props) {
             }
             return monkey;
         });
-		this.updateMonkey(oldMonkey.id, newMonkey);
+		this.updateMonkey(oldMonkey, newMonkey);
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));
@@ -238,18 +251,17 @@ constructor(props) {
     }
 	
 	deleteMonkey(monkeyToDelete) {
-
-		fetch(`/monkeys/${monkeyToDelete}`, {
+		fetch(`/monkeys/${monkeyToDelete.id}`, {
 			method: "DELETE",
 			headers: {
 			    "Content-type": "application/json",
-                'Authorization': localStorage.getItem("token")}
+                'Authorization': [this.state.token, monkeyToDelete.user]}
 		}).then(response => response.json())
             .then(json => {
                 if (json.message !== undefined) {
                     alert(json.message);
                 } else {
-                    _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete);
+                    _.remove(this.state.monkeys, monkey => monkey._id === monkeyToDelete.id);
                     this.setState({ monkeys: this.state.monkeys });
                 }
             })
@@ -259,8 +271,12 @@ constructor(props) {
 	}
 
 	findUsersMonkeys(user) {
-
-        fetch(`/monkeys/${user}`)
+        fetch(`/monkeys/${user}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                'Authorization': [this.state.token, user]}
+        })
             .then(response => response.json())
             .then(monkeys => this.setState({
                 monkeys: monkeys
@@ -283,7 +299,7 @@ constructor(props) {
             }
             return monkey;
         });
-        this.updatePublicMonkey(oldMonkey.id, nMonkey);
+        this.updatePublicMonkey(oldMonkey, nMonkey);
         this.setState(prevState => ({
             monkeys: newMonkeyState
         }));
@@ -291,18 +307,23 @@ constructor(props) {
     }
 
     updatePublicMonkey(monkeyToUpdate, updatedMonkey) {
-
-        fetch(`/monkeys/public/${monkeyToUpdate}`, {
+        fetch(`/monkeys/public/${monkeyToUpdate.id}`, {
             method: "PUT",
-            headers: {"Content-type": "application/json"},
+            headers: {
+                "Content-type": "application/json",
+                'Authorization': [this.state.token, monkeyToUpdate.user]
+                },
             body: JSON.stringify(updatedMonkey)
         }).catch(err => document.write(err));
-
     }
 
 	findPublicMonkeys(isPublic) {
-
-		fetch(`/monkeys/public/${isPublic}`)
+		fetch(`/monkeys/public/${isPublic}`, {
+		    method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                'Authorization': [this.state.token, this.state.userEmail]}
+        })
 			.then(response => response.json())
 			.then(monkeys => this.setState({
                 inspirationMonkeys: monkeys
@@ -310,19 +331,17 @@ constructor(props) {
 	}
 
 	updateMonkey(monkeyToUpdate, updatedMonkey) {
-
-        fetch(`/monkeys/${monkeyToUpdate}`, {
+        fetch(`/monkeys/${monkeyToUpdate.id}`, {
             method: "PUT",
             headers: {
                 "Content-type": "application/json",
-                'Authorization': localStorage.getItem("token")},
+                'Authorization': [this.state.token, monkeyToUpdate.user]
+            },
 			body: JSON.stringify(updatedMonkey)
         }).then(response => response.json())
             .then(json => {
                 if (json.message !== undefined) {
                     alert(json.message);
-                } else {
-                    console.log("yolo");
                 }
             }).catch(err => document.write(err));
 
