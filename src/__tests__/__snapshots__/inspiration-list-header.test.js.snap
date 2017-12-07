@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a snapshot 1`] = `
+<thead>
+  <tr
+    className="lead"
+  >
+    <th>
+      Name
+    </th>
+    <th>
+      Race
+    </th>
+    <th>
+      User
+    </th>
+  </tr>
+</thead>
+`;

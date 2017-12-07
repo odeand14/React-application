@@ -1,10 +1,10 @@
 import React from 'react';
-import Login from '../login';
+import Item from '../inspiration-header';
 import renderer from 'react-test-renderer';
 
 it('renders a snapshot', () => {
     const tree = renderer
-        .create(<Login/>)
+        .create(<Item/>)
         .toJSON();
     expect(tree).toMatchSnapshot();
 });

@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a snapshot 1`] = `
+<nav
+  className="navbar navbar-expand-lg mx-3 my-4"
+>
+  <ul
+    className="navbar-nav mr-auto"
+  />
+  <ul
+    className="navbar-nav ml-auto"
+  />
+</nav>
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a snapshot 1`] = `
+<tbody>
+  <tr>
+    <td
+      className="lead"
+    />
+    <td
+      className="lead"
+    />
+    <td
+      className="lead"
+    />
+  </tr>
+</tbody>
+`;

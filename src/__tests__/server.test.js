@@ -59,7 +59,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
     it('should return a JSON object with persons which contains user above', () => {
         return request(app)
             .get('/users')
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(res => {
@@ -72,7 +72,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
 
         return request(app)
             .post("/monkeys")
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .send(newMonkey)
             .expect(201)
             .expect('Content-Type', 'application/json; charset=utf-8')
@@ -82,14 +82,13 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
                 expect(res.body.race).toEqual(newMonkey.race);
                 expect(res.body.isPublic).toEqual(false);
                 createdMonkey = res.body;
-                console.log(createdMonkey.isPublic);
             });
     });
 
     it("should find new monkey in DB", () => {
         return request(app)
             .get(`/monkeys/${user.email}`)
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(res => {
@@ -101,6 +100,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
     it("should set monkey public", () => {
         return request(app)
             .put(`/monkeys/public/${createdMonkey._id}`)
+            .set("Authorization", `${token},${user.email}`)
             .send({isPublic: !createdMonkey.isPublic})
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8');
@@ -109,7 +109,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
     it("should find new monkey in DB with new true public state", () => {
         return request(app)
             .get(`/monkeys/${user.email}`)
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(res => {
@@ -121,7 +121,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
     it("should delete new monkey from DB", () => {
         return request(app)
             .delete(`/monkeys/${createdMonkey._id}`)
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(res => {
@@ -134,7 +134,7 @@ describe('Creates a user, fails to create monkey, logs in then creates monkey. '
     it("should delete new user from DB", () => {
         return request(app)
             .delete(`/users/${user._id}`)
-            .set("Authorization", token)
+            .set("Authorization", `${token},${user.email}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(res => {

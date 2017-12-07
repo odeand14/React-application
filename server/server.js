@@ -38,10 +38,15 @@ const User = mongoose.model("User", {
 });
 
 const tokenExists = (req, res) => {
+
+    if (req.headers.authorization === undefined) {
+        res.status(401).send({message: 'You are not authorized for this action'});
+        return false;
+    }
+
     const data = req.headers.authorization.split(",");
     const token = data[0];
     const user = data[1];
-
     if (token && (token.split(".").length === 3)) {
         try {
             const tokenUser = jwtSimple.decode(token, jwtSecret);
@@ -152,43 +157,40 @@ app.post('/login', (req, res) => {
 
 
 
-// Created for testing, not using it in the app so commenting out as it is flawed.
-// Could change to only getting current User or somesuch, but no point when I'm not using it.
-// Keeping it here in case I wish to expand.
+//I know this is not optimal security, use it for my tests
 
-// app.get("/users", (req, res) => {
-//
-//     const email = tokenExists(req, res);
-//     if (!email) {
-//         return;
-//     }
-//
-//     User.find((err, users) => {
-//         if (err) {
-//             res.status(500).send(err);
-//             return;
-//         }
-//         res.status(200).send(users);
-//     });
-// });
+app.get("/users", (req, res) => {
 
-// Likewise
-// app.delete("/users/:id", (req, res) => {
-//
-//     const email = tokenExists(req, res);
-//     if (!email) {
-//         return;
-//     }
-//
-//     User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
-//         if (err) {
-//             res.status(500).send(err);
-//             return;
-//         }
-//         res.status(200).send(deletedUser);
-//     });
-//
-// });
+    const email = tokenExists(req, res);
+    if (!email) {
+        return;
+    }
+
+    User.find((err, users) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(users);
+    });
+});
+
+app.delete("/users/:id", (req, res) => {
+
+    const email = tokenExists(req, res);
+    if (!email) {
+        return;
+    }
+
+    User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(200).send(deletedUser);
+    });
+
+});
 
 
 const Monkey = mongoose.model("Monkey", {
@@ -199,6 +201,8 @@ const Monkey = mongoose.model("Monkey", {
     isPublic: {type: Boolean, default: false}
 });
 
+
+//I know this is not optimal security, use it for my tests
 app.get("/monkeys", (req, res) => {
 
     const email = tokenExists(req, res);

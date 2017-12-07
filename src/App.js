@@ -164,7 +164,7 @@ constructor(props) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': [this.state.token, this.state.userEmail]
+                'Authorization': [this.state.token, monkey.user]
             },
             body: JSON.stringify(monkey)
         }).then(response => response.json())
